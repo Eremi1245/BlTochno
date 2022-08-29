@@ -1,0 +1,1 @@
+CONNECT_TO_DB='mysql+pymysql://root:1234@localhost/BlTocho'
