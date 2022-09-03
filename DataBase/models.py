@@ -2,15 +2,16 @@ from sqlalchemy import Column, Integer, String, create_engine, DateTime, Foreign
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
-from db_setup import Base
+# from db_setup import Base
 
+from .db_setup import Base
 
 class Category(Base):
     __tablename__ = 'categories' #название таблицы
     id = Column(Integer, primary_key=True, autoincrement=True)
     name=Column(String(120))
 
-class Events(Base):
+class Event(Base):
     __tablename__ = 'events' #название таблицы
     id = Column(Integer, primary_key=True, autoincrement=True)
     category=Column(Integer,ForeignKey("categories.id"))
