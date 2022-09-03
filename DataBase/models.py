@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from sqlalchemy import Column, Integer, String, create_engine, DateTime, ForeignKey, VARCHAR, Date, Time
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
@@ -5,6 +7,7 @@ from sqlalchemy.orm import relationship
 # from db_setup import Base
 
 from .db_setup import Base
+
 
 class Category(Base):
     __tablename__ = 'categories' #название таблицы
@@ -31,7 +34,6 @@ class Habits_Events(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     habit_id=Column(Integer,ForeignKey("habits.id"))
     event_id = Column(Integer, ForeignKey("events.id"))
-
 
 
 

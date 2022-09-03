@@ -1,6 +1,5 @@
-import sys
 from logging.config import fileConfig
-
+from const_for_alembic import CONNECT_TO_DB,PATH_FOR_ALEMBIC
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
@@ -10,7 +9,8 @@ from alembic import context
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 from models import Base
-CONNECT_TO_DB='mysql+pymysql://root:1234@localhost/bltocho'
+# CONNECT_TO_DB='mysql+pymysql://root:1234@localhost/bltocho'
+CONNECT_TO_DB=CONNECT_TO_DB
 
 config = context.config
 
@@ -77,3 +77,5 @@ if context.is_offline_mode():
     run_migrations_offline()
 else:
     run_migrations_online()
+
+
