@@ -1,9 +1,13 @@
 from copy import deepcopy
+from datetime import datetime
 
 from telebot import TeleBot, types
 
 from BlTochno.DataBase.models import Event, Category
+from BlTochno.DataBase.session import Sessn
 from BlTochno.Telegram.commands import add_to_data, get_object
+from BlTochno.const import default_response
+from BlTochno.other.supportive_classes import Singleton
 from secret import TOKEN
 
 bot = TeleBot(TOKEN)
@@ -13,8 +17,8 @@ tg_commands=[
     '/add_event',
     '/add_category'
 ]
-keyboard_response=''
 
+event=Event()
 
 @bot.message_handler(commands=['start'])
 def bot_start(message):
@@ -29,49 +33,88 @@ def get_my_day(message):
 def get_my_week(message):
     bot.send_message(message.from_user.id, 'Расписание на неделю')
 
-@bot.callback_query_handler(func=lambda message: True)
-@bot.message_handler(commands=['add_event'])
-def add_event(message,args:dict=None):
-    if not args:
-        args={'new_event':Event(),'attribute':''}
-    new_event=args['new_event']
-    attrib = args['attribute']
-    if attrib and message.text!='/add_event':
-        setattr(new_event, attrib, message.text)
 
-    if not new_event.name:
-        args.update({'attribute':'name'})
-        bot.send_message(message.from_user.id, 'Введите название евента')
-        bot.register_next_step_handler(message,add_event,args)
-    elif not new_event.dt:
-        args.update({'attribute':'dt'})
-        bot.send_message(message.from_user.id, 'Введите Дату ивента')
-        bot.register_next_step_handler(message,add_event,args)
-    elif not new_event.tm:
-        args.update({'attribute':'tm'})
-        bot.send_message(message.from_user.id, 'Введите Время ивента')
-        bot.register_next_step_handler(message,add_event,args)
-    elif not new_event.category:
-        args.update({'attribute':'category'})
-        categories=get_object(Category)
-        categories='\n'.join([f'{cat.name}' for cat in categories])
-        question = 'Выбери id категории ивента\n'+categories
-        bot.send_message(message.from_user.id, question)
-        bot.register_next_step_handler(message,add_event,args)
-    elif not new_event.desc:
-        args.update({'attribute':'desc'})
-        bot.send_message(message.from_user.id, 'Введите описание ивента\nВведите "нет" если описание не требуется')
-        bot.register_next_step_handler(message,add_event,args)
-    else:
-        result=add_to_data(new_event)
-        if result["status"]:
-            bot.send_message(message.from_user.id, 'Евент добавлен')
-        else:
-            bot.send_message(message.from_user.id, f'Ошибка: {result["error"]}')
+
+@bot.message_handler(commands=['add_event'])
+def add_event(message):
+    global event
+    event=Event()
+    bot.send_message(message.from_user.id, 'Введите название евента')
+    bot.register_next_step_handler(message, event_name)
+    # elif not new_event.dt:
+    #     data.update({'attribute': 'dt'})
+    #     bot.send_message(message.from_user.id, 'Введите Дату ивента')
+    #     bot.register_next_step_handler(message,enter_date)
+    # elif not new_event.tm:
+    #     data.update({'attribute': 'tm'})
+    #     bot.send_message(message.from_user.id, 'Введите Время ивента')
+    #     bot.register_next_step_handler(message, add_event, data)
+    # elif not new_event.category:
+    #     data.update({'attribute': 'category'})
+    #     categories=get_object(Category)
+    #     keyboard = types.InlineKeyboardMarkup()
+    #     for categ in categories:
+    #         key = types.InlineKeyboardButton(text=categ.name, callback_data=categ.id)
+    #         keyboard.add(key)
+    #     question = 'Выбери id категории ивента'
+    #     bot.send_message(message.from_user.id, text=question, reply_markup=keyboard)
+    # elif not new_event.desc:
+    #     data.update({'attribute': 'desc'})
+    #     bot.send_message(message.from_user.id, 'Введите описание ивента\nВведите "нет" если описание не требуется')
+    #     bot.register_next_step_handler(message, add_event, data)
+    # else:
+    #     result=add_to_data(new_event)
+    #     if result["status"]:
+    #         bot.send_message(message.from_user.id, 'Евент добавлен')
+    #     else:
+    #         bot.send_message(message.from_user.id, f'Ошибка: {result["error"]}')
+
+@bot.message_handler(commands=['event_name'])
+def event_name(message):
+    name=message.text
+    event.name=name
+    bot.send_message(message.from_user.id, 'Введите дату ивента')
+    bot.register_next_step_handler(message, event_date)
+
+@bot.message_handler(commands=['event_date'])
+def event_date(message):
+    dt=message.text
+    dt=datetime.strptime(dt, "%Y-%m-%d").date()
+    event.dt=dt
+    bot.send_message(message.from_user.id, 'Введите время ивента')
+    bot.register_next_step_handler(message, event_time)
+
+@bot.message_handler(commands=['event_time'])
+def event_time(message):
+    tm=message.text
+    tm=datetime.strptime(tm, "%H:%M:%S").time()
+    event.tm=tm
+    categories = get_object(Category)
+    keyboard = types.InlineKeyboardMarkup()
+    for categ in categories:
+        key = types.InlineKeyboardButton(text=categ.name, callback_data=categ.id)
+        keyboard.add(key)
+    bot.send_message(message.from_user.id, text='Укажите категорию ивента', reply_markup=keyboard)
+    bot.send_message(message.from_user.id, 'Описание ивента')
+    bot.register_next_step_handler(message, event_desc)
+
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_worker(call):
-    add_event(call["message"], call["args"])
+    id=call.data
+    # category=get_object(Category,id=id)[0]
+    event.category=id
+
+@bot.message_handler(commands=['event_desc'])
+def event_desc(message):
+    desc=message.text
+    event.desc=desc
+    result=add_to_data(event)
+    if result["status"]:
+        bot.send_message(message.from_user.id, 'Евент добавлен')
+    else:
+        bot.send_message(message.from_user.id, f'Ошибка: {result["error"]}')
+
 
 @bot.message_handler(commands=['add_category'])
 def add_category(message,args:dict=None):
@@ -119,3 +162,4 @@ def get_age(message):
 
 
 bot.infinity_polling(none_stop=True, interval=0)
+
