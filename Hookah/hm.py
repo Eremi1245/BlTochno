@@ -1,4 +1,4 @@
-from BlTochno.Hookah.hookautils.parsemixes import parsemixes
+from collections import defaultdict
 from BlTochno.common_utils.htmlcollector import HtmlCollector
 from BlTochno.common_utils.htmlparser import HtmlParser
 from BlTochno.common_utils.urlobject import UrlObject
@@ -69,10 +69,11 @@ class HookaMaster:
 
     def __init__(self) -> None:
         self.storage=[]
-        self.mixes={}
+        self.mixes=[]
         self.sites_with_mixes=[]
-        self.html_collector=HtmlCollector()
-        self.html_parser=HtmlParser()
+        self.urls:list[UrlObject]=[]
+        self.html_collector:HtmlCollector=HtmlCollector()
+        self.html_parser:HtmlParser=HtmlParser()
 
 
     def check_recipe(self):
@@ -84,19 +85,27 @@ class HookaMaster:
     print('Приятного покура')
 
 
-    def parse_new_mixes(self)->list[UrlObject]:
+    def parse_new_mixes(self)->None:
         self.prepare_sites()
         urls=self.html_collector.start(self.sites_with_mixes)
         urls=self.html_parser.parse_page(urls)
-        urls=parsemixes(urls)
-        return urls
+        self.urls.clear()
+        self.urls=urls
 
     def prepare_sites(self)->None:
         self.sites_with_mixes=[]
         self.sites_with_mixes=[UrlObject(url=site,parsers=parsers) for site,parsers in sites_with_mixes.items()]
 
-
     def urlsobject_to_smokeobject(self):
         pass
+
+    def count_components(self)->dict:
+        components=defaultdict(int)
+        for url in self.urls:
+            matches=url.regex_matchs
+            for match in matches:
+                for component in match:
+                    components[component]+=1
+        return components
 
 
