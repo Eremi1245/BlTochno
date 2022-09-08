@@ -1,3 +1,8 @@
+from BlTochno.Hookah.hookautils.parsemixes import parsemixes
+from BlTochno.common_utils.htmlcollector import HtmlCollector
+from BlTochno.common_utils.htmlparser import HtmlParser
+from BlTochno.common_utils.urlobject import UrlObject
+from BlTochno.Hookah.hooka_settings import sites_with_mixes
 
 storage=['грейпфрут','патока','киви','вишня','','корица','кукуруза','молоко','deep blue sea','мед','лимон','орех','raf in the jungle','мороженное','adalia power','лед','энергетик','love 66','']
 mixes={
@@ -59,12 +64,39 @@ mixes={
     57:{'main':'Персик','supplement': 'апельсин','shade':''},
 }
 
-def hooka_master():
-    for k,v in mixes.items():
-        ingridients=list(v.values())
-        check_ingridients=[ingridient in storage for ingridient in ingridients]
-        if all(check_ingridients):
-            print(f'Мы можем сделать микс: {v}')
+class HookaMaster:
 
-hooka_master()
-print('yt')
+
+    def __init__(self) -> None:
+        self.storage=[]
+        self.mixes={}
+        self.sites_with_mixes=[]
+        self.html_collector=HtmlCollector()
+        self.html_parser=HtmlParser()
+
+
+    def check_recipe(self):
+        for k,v in self.mixes.items():
+            ingridients=list(v.values())
+            check_ingridients=[ingridient in self.storage for ingridient in ingridients]
+            if all(check_ingridients):
+                print(f'Мы можем сделать микс: {v}')
+    print('Приятного покура')
+
+
+    def parse_new_mixes(self)->list[UrlObject]:
+        self.prepare_sites()
+        urls=self.html_collector.start(self.sites_with_mixes)
+        urls=self.html_parser.parse_page(urls)
+        urls=parsemixes(urls)
+        return urls
+
+    def prepare_sites(self)->None:
+        self.sites_with_mixes=[]
+        self.sites_with_mixes=[UrlObject(url=site,parsers=parsers) for site,parsers in sites_with_mixes.items()]
+
+
+    def urlsobject_to_smokeobject(self):
+        pass
+
+
