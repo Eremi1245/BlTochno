@@ -3,7 +3,7 @@ from BlTochno.common_utils.parser import Parser
 
 class UrlObject:
 
-    def __init__(self, url: str,parsers:Parser=[]) -> None:
+    def __init__(self, url: str,parsers:Parser=list[Parser]) -> None:
         self.url=url
         self.html=''
         self.comment=''

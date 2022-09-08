@@ -1,5 +1,5 @@
 from logging.config import fileConfig
-from const_for_alembic import CONNECT_TO_DB,PATH_FOR_ALEMBIC
+from const_for_alembic import CONNECT_TO_DB
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool

@@ -4,9 +4,9 @@ from sqlalchemy import Column, Integer, String, create_engine, DateTime, Foreign
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
-# from db_setup import Base
+from db_setup import Base
 
-from .db_setup import Base
+# from .db_setup import Base
 
 
 class Category(Base):
