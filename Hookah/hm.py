@@ -1,3 +1,4 @@
+from BlTochno.Hookah.wordanalayzer import WordsAnalayzer
 from BlTochno.common_utils.htmlcollector import HtmlCollector
 from BlTochno.common_utils.htmlparser import HtmlParser
 from BlTochno.common_utils.urlobject import UrlObject
@@ -67,13 +68,14 @@ mixes={
 class HookaMaster:
 
 
-    def __init__(self) -> None:
+    def __init__(self,word_analayzer:WordsAnalayzer=None) -> None:
         self.storage=[]
         self.mixes=[]
         self.sites_with_mixes=[]
         self.urls:list[UrlObject]=[]
         self.html_collector:HtmlCollector=HtmlCollector()
         self.html_parser:HtmlParser=HtmlParser()
+        self.word_analayzer=word_analayzer
 
 
     def check_recipe(self):
@@ -98,6 +100,10 @@ class HookaMaster:
 
     def urlsobject_to_smokeobject(self):
         pass
+
+
+    def analize_words(self):
+        self.urls=self.word_analayzer.analize(self.urls)
 
     def count_components(self)->dict:
         components=defaultdict(int)
