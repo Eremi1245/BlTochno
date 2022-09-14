@@ -33,15 +33,12 @@ class HookaMaster:
     def urls_to_mix(self):
         for url in self.urls:
             for mix_index in range(len(url.regex_matchs)):
-                name_of_mix=self.mix_hash(url.regex_matchs[mix_index])
+                name_of_mix=url.regex_matchs[mix_index]
+                name_of_mix.sort()
+                name_of_mix=''.join(name_of_mix)
                 self.mixes[name_of_mix]=dict()
                 for component_index in range(len(url.regex_matchs[mix_index])):
                     self.mixes[name_of_mix][f'Component #{component_index+1}']=url.regex_matchs[mix_index][component_index]
-
-    def mix_hash(self,mix_lst:list[str]):
-        mix_lst=set(mix_lst)
-        hash=md5(mix_lst)
-        return hash
 
 
     def parse_new_mixes(self)->None:
