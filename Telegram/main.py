@@ -35,8 +35,6 @@ def get_my_day(message):
 def get_my_week(message):
     bot.send_message(message.from_user.id, 'Расписание на неделю')
 
-
-
 @bot.message_handler(commands=['add_event'])
 def add_event(message):
     global event
@@ -50,7 +48,6 @@ def event_name(message):
     event.name=name
     bot.send_message(message.from_user.id, 'Введите дату ивента')
     calendar(message)
-
 
 @bot.message_handler(commands=['event_time'])
 def event_time(message):
@@ -66,8 +63,6 @@ def event_time(message):
     bot.send_message(message.from_user.id, 'Описание ивента')
     bot.register_next_step_handler(message, event_desc)
 
-
-
 @bot.message_handler(commands=['event_desc'])
 def event_desc(message):
     desc=message.text
@@ -77,7 +72,6 @@ def event_desc(message):
         bot.send_message(message.from_user.id, 'Евент добавлен')
     else:
         bot.send_message(message.from_user.id, f'Ошибка: {result["error"]}')
-
 
 @bot.message_handler(commands=['calendar'])
 def calendar(m):
@@ -108,8 +102,6 @@ def cal(c):
 def callback_worker(call):
     id=call.data
     event.category=id
-
-
 
 bot.infinity_polling(none_stop=True, interval=0)
 

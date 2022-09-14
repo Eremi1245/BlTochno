@@ -19,7 +19,6 @@ class HookaMaster:
         self.html_parser:HtmlParser=HtmlParser()
         self.word_analayzer=word_analayzer
 
-
     def check_recipe(self):
         for k,v in self.mixes.items():
             ingridients=list(v.values())
@@ -27,8 +26,6 @@ class HookaMaster:
             if all(check_ingridients):
                 print(f'Мы можем сделать микс: {v}')
     print('Приятного покура')
-
-
 
     def urls_to_mix(self):
         for url in self.urls:
@@ -39,7 +36,6 @@ class HookaMaster:
                 self.mixes[name_of_mix]=dict()
                 for component_index in range(len(url.regex_matchs[mix_index])):
                     self.mixes[name_of_mix][f'Component #{component_index+1}']=url.regex_matchs[mix_index][component_index]
-
 
     def parse_new_mixes(self)->None:
         self.prepare_sites()
@@ -54,7 +50,6 @@ class HookaMaster:
 
     def urlsobject_to_smokeobject(self):
         pass
-
 
     def analize_words(self):
         self.urls=self.word_analayzer.analize(self.urls)

@@ -19,7 +19,6 @@ def add_to_data(new_object)->dict:
         result['error']=er
     return result
 
-
 def get_object(desired_object,**kwargs):
     if kwargs:
         try:
@@ -37,7 +36,6 @@ def get_object(desired_object,**kwargs):
             return result
         except Exception as er:
             print(er)
-
 
 def my_day(desired_object):
     today=datetime.today().date()
