@@ -62,5 +62,3 @@ class HookaMaster:
                 for component in match:
                     components[component]+=1
         return components
-
-
