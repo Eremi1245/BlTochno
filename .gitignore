@@ -129,4 +129,4 @@ dmypy.json
 .pyre/
 
 /DataBase/const_for_alembic.py
-Django/BlTochnoSite/secret.py
+/Django/BlTochnoSite/secret.py
