@@ -2,12 +2,7 @@ from copy import deepcopy
 from datetime import datetime
 from telegram_bot_calendar import DetailedTelegramCalendar, LSTEP
 from telebot import TeleBot, types
-
-# from BlTochno.BlTochno.DataBase.models import Event, Category
-# from BlTochno.BlTochno.DataBase.session import Sessn
-# from BlTochno.BlTochno.Telegram.commands import add_to_data, get_object, my_day
-from BlTochno.BlTochno.const import default_response
-from BlTochno.BlTochno.other.supportive_classes import Singleton
+from BlTochno.other.supportive_classes import Singleton
 from secret import TOKEN
 
 
