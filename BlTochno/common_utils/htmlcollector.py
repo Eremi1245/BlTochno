@@ -7,7 +7,7 @@ class HtmlCollector:
     """Base class for get Content from url
     """
 
-    def start(self,urls:list[UrlObject])->list[UrlObject]:
+    def start(self,url:UrlObject)->UrlObject:
         """Main function of class. Get content from url and return list of content
 
         Args:
@@ -17,20 +17,17 @@ class HtmlCollector:
         Returns:
             list[str]: List of content
         """
-        if type(urls)!=list:
-            urls=[urls]
-        for url in urls:
-            try:
-                resp=requests.get(url(),timeout=20)  
-                if resp.status_code==200:
-                    url.html=resp.text
-                else:
-                    url.comment=f"{url.comment}\n{datetime.now()} - {resp.status_code}"
-                    print(f"url{url()} : {url.comment}")
-            except ConnectionError:
-                url.comment=f"{url.comment}\n{datetime.now()} - This site can’t be reached"
+        try:
+            resp=requests.get(url(),timeout=20)  
+            if resp.status_code==200:
+                url.html=resp.text
+            else:
+                url.comment=f"{url.comment}\n{datetime.now()} - {resp.status_code}"
                 print(f"url{url()} : {url.comment}")
-            except Exception as er:
-                url.comment=f"{url.comment}\n{datetime.now()} - {er}"
-                print(f"url{url()} : {url.comment}")
-        return urls
+        except ConnectionError:
+            url.comment=f"{url.comment}\n{datetime.now()} - This site can’t be reached"
+            print(f"url{url()} : {url.comment}")
+        except Exception as er:
+            url.comment=f"{url.comment}\n{datetime.now()} - {er}"
+            print(f"url{url()} : {url.comment}")
+        return url

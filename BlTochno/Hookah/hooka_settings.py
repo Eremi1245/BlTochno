@@ -1,7 +1,7 @@
 from BlTochno.BlTochno.common_utils.parser import NNKalyanDecorator
 
 nn_kalyan_reg='<li>((\w+\s*\w*\s*\w*\s*\w*)\+*(\w+\s*\w*\s*\w*\s*\w*)*\+*(\w+\s*\w*\s*\w*\s*\w*)*\+*(\w+\s*\w*\s*\w*\s*\w*)*\+*(\w+\s*\w*\s*\w*\s*\w*)*).*?<\/li>'
-
+hooka_cat='https://hookah-cat.online/today-we-smoke/?limit=80'
 
 sites_with_mixes={
     'https://nn-kalyan.ru/100-vkusnyx-miksov-dlya-vashego-kalyana/':[NNKalyanDecorator(regex=nn_kalyan_reg),],
