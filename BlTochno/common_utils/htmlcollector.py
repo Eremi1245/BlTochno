@@ -1,7 +1,7 @@
 import datetime
 import requests
 
-from BlTochno.common_utils.urlobject import UrlObject
+from BlTochno.BlTochno.common_utils.urlobject import UrlObject
 
 class HtmlCollector:
     """Base class for get Content from url

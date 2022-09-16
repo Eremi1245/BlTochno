@@ -1,4 +1,4 @@
-from BlTochno.common_utils.parser import NNKalyanDecorator
+from BlTochno.BlTochno.common_utils.parser import NNKalyanDecorator
 
 nn_kalyan_reg='<li>((\w+\s*\w*\s*\w*\s*\w*)\+*(\w+\s*\w*\s*\w*\s*\w*)*\+*(\w+\s*\w*\s*\w*\s*\w*)*\+*(\w+\s*\w*\s*\w*\s*\w*)*\+*(\w+\s*\w*\s*\w*\s*\w*)*).*?<\/li>'
 

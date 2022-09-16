@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import sessionmaker
-from BlTochno.other.supportive_classes import Singleton
+from BlTochno.BlTochno.other.supportive_classes import Singleton
 from secret import CONNECT_TO_DB
 
 engine = create_engine(CONNECT_TO_DB)

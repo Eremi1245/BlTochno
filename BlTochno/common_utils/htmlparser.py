@@ -1,5 +1,5 @@
-from BlTochno.common_utils.parser import Parser
-from BlTochno.common_utils.urlobject import UrlObject
+from BlTochno.BlTochno.common_utils.parser import Parser
+from BlTochno.BlTochno.common_utils.urlobject import UrlObject
 
 
 class HtmlParser:

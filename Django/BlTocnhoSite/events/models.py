@@ -2,14 +2,10 @@ from django.db import models
 
 # Create your models here.
 class Category(models.Model):
-    title = models.CharField(max_length=255)
-    slug = models.SlugField(unique=True, max_length=255)
-    content = models.TextField()
-    created_on = models.DateTimeField(auto_now_add=True)
-    author = models.TextField()
-
-class Category(models.Model):
-    name=models.CharField(max_length=255)
+    name=models.CharField(
+        verbose_name='Наименование категории',
+        max_length=255
+        )
 
 
     def __str__(self):
@@ -34,7 +30,6 @@ class Event(models.Model):
 
     def __str__(self):
         return f'{self.name} {self.dt} {self.tm}'
-
 class Habit(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     name = models.CharField(
@@ -44,7 +39,6 @@ class Habit(models.Model):
 
     def __str__(self):
         return self.name
-
 class Habits_Events(models.Model):
     habit_id=models.ForeignKey(Habit, on_delete=models.CASCADE)
     event_id = models.ForeignKey(Event, on_delete=models.CASCADE)
@@ -73,7 +67,6 @@ class HookaTobacco(models.Model):
     hook_category=models.ForeignKey(HookaComponent, on_delete=models.CASCADE)
     def __str__(self):
         return self.name
-
 class HookaMixRecept(models.Model):
     name = models.CharField(
         verbose_name='Название Микса',
