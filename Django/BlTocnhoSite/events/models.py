@@ -1,5 +1,7 @@
 from django.db import models
 
+from events.utils import status_choise
+
 # Create your models here.
 class Category(models.Model):
     name=models.CharField(
@@ -24,9 +26,12 @@ class Event(models.Model):
     tm=models.TimeField(
         verbose_name='Время Ивента'
     )
+
+    status=models.CharField(max_length=255, choices=status_choise,default=status_choise[0])
     desc = models.CharField(
         verbose_name='Подробное описание ивента'
-        ,max_length=255)
+        ,max_length=255,
+        blank=True)
 
     def __str__(self):
         return f'{self.name} {self.dt} {self.tm}'
@@ -42,8 +47,9 @@ class Habit(models.Model):
 class Habits_Events(models.Model):
     habit_id=models.ForeignKey(Habit, on_delete=models.CASCADE)
     event_id = models.ForeignKey(Event, on_delete=models.CASCADE)
+
     def __str__(self):
-        return self.name
+        return f'{self.habit_id.name} - {self.event_id.name} {self.event_id.dt}'
 class HookaCategory(models.Model):
     name = models.CharField(
         verbose_name='Категория кальяна',

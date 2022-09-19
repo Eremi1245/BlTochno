@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% for today_event in today_events %}
+    <p>{{today_event.name}} {{today_event.tm}}</p>
+
+{% endfor %}
+<a class="btn btn-outline-light btn-lg" href="add_event/" role="button"
+>Добавить событие</a
+>
+
+
+<h1> Салам алейкум епта</h1>
+{% endblock %}

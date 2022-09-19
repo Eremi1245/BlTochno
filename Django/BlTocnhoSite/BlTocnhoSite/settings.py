@@ -57,7 +57,7 @@ ROOT_URLCONF = 'BlTocnhoSite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates','events/templates','BlTocnhoSite/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
