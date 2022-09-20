@@ -11,6 +11,6 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
         lookup_field='category'
 
 class EventViewSet(viewsets.ModelViewSet):
-    queryset = Event.objects.all().filter(dt=date.today())
+    queryset = Event.objects.all().filter(dt=date.today()).order_by('tm')
     serializer_class = EventSerializer
     lookup_field='category'

@@ -1,4 +1,4 @@
-from BlTochno.BlTochno.common_utils.parser import Parser
+from BlTochno.common_utils.parser import Parser
 
 
 class UrlObject:

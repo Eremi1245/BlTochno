@@ -1,4 +1,4 @@
-from BlTochno.BlTochno.common_utils.parser import NNKalyanDecorator
+from BlTochno.common_utils.parser import NNKalyanDecorator
 
 nn_kalyan_reg='<li>((\w+\s*\w*\s*\w*\s*\w*)\+*(\w+\s*\w*\s*\w*\s*\w*)*\+*(\w+\s*\w*\s*\w*\s*\w*)*\+*(\w+\s*\w*\s*\w*\s*\w*)*\+*(\w+\s*\w*\s*\w*\s*\w*)*).*?<\/li>'
 hooka_cat='https://hookah-cat.online/today-we-smoke/?limit=80'

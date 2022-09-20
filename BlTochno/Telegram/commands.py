@@ -1,6 +1,8 @@
 # from copy import deepcopy
 # from datetime import datetime
-
+import json
+import requests
+from requests import Response
 # from sqlalchemy import select
 
 # from BlTochno.BlTochno.DataBase.session import Sessn
@@ -37,13 +39,22 @@
 #         except Exception as er:
 #             print(er)
 
-# def my_day(desired_object):
-#     today=datetime.today().date()
-#     try:
-#         result = select(desired_object).where(desired_object.dt==today).order_by(desired_object.tm)
-#         result = session.execute(result) # а это уже ее непосредственное
-#         result=[res[0] for res in result]
-#         return result
-#     except Exception as er:
-#         print(er)
+from urllib import request
 
+
+def my_day():
+    result=''
+    try:
+        resp = requests.get('http://127.0.0.1:8000/api/events/')
+        resp= request_handler(resp)
+        for res in resp:
+            result+=f'{res["tm"]} - {res["name"]} ({res["status"]})\n'
+        return result
+    except Exception as er:
+        print(er)
+
+
+
+def request_handler(request:Response):
+    request=eval(request.text)
+    return request

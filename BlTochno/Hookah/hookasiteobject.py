@@ -1,7 +1,7 @@
 from msilib.schema import Error
-from BlTochno.BlTochno.common_utils.htmlcollector import HtmlCollector
-from BlTochno.BlTochno.common_utils.htmlparser import HtmlParser
-from BlTochno.BlTochno.common_utils.urlobject import UrlObject
+from BlTochno.common_utils.htmlcollector import HtmlCollector
+from BlTochno.common_utils.htmlparser import HtmlParser
+from BlTochno.common_utils.urlobject import UrlObject
 
 
 class HookaSiteObject:
