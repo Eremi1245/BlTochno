@@ -1,0 +1,8 @@
+.bltochno_table {
+    width: auto;
+};
+
+.calendar_header {
+    display: flex;
+    justify-content: space-between;
+}
