@@ -6,3 +6,39 @@
     display: flex;
     justify-content: space-between;
 }
+
+.calendar_table{
+    font-size: small;
+    border: solid;
+    width: 100%;
+    height: auto;
+}
+
+.my_row{
+    display: flex;
+    justify-content: space-between;
+}
+
+.my_col{
+    width: 14%;
+    border: outset;
+    max-width: 14%;
+}
+
+
+.event_cell{
+    display: flex;
+    flex-wrap: wrap;
+
+}
+
+
+.weekdays{
+
+}
+
+.day_number{
+    text-align: right;
+    font-size: large;
+
+}

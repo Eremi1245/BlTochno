@@ -9,3 +9,4 @@ router.register(r'events', EventViewSet)
 router.register(r'category', CategoryViewSet)
 
 
+
