@@ -8,13 +8,21 @@
   <div class="table_div">
     <table title="Твое расписание" class="day_table">
       {% for event in events%}
-      <tr class="my_row">
+        {%if event.status|in_processig_handler:'passed' %}
+            <tr class="my_row" style="background-color: grey;">
+        {%else%}
+          <tr class="my_row">
+        {%endif%}
           <th class="event_col counter">#{{forloop.counter}}</th>
           <th class="event_col tm">{{event.tm|good_dt}}</th>
           <th class="event_col name" >{{event.name}}</th>
           <th class="event_col category">({{event.category}})</th>
           <th class="event_col desc">{{evet.desc}}</th>
-          <th id ="status_blink_color" class="event_col status">{{event.status|status_handler}}</th>
+          {%if not event.status|in_processig_handler:'In processing' %}
+            <th  class="event_col status">{{event.status|status_handler}}</th>
+          {%else%}
+            <th id ="status_blink_color" class="event_col status">{{event.status|status_handler}}</th>
+          {%endif%}
           <th class="event_col actions">
             <a href=""><img src="{% static 'my_calendar/img/succes.png' %}" alt="Выполненно" width="20" height="20"></a>
             <a href=""><img src="{% static 'my_calendar/img/no_succes.png' %}" alt="Не выполненно" width="20" height="20"></a>

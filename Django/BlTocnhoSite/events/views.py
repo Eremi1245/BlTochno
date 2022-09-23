@@ -49,26 +49,19 @@ def event(request,event_id):
 
 def get_all_events(dt:date):
     day_events=Event.objects.all().filter(dt=dt).order_by('tm')
-    curr_time=datetime.now()
-    date_time_now=datetime(
-        year=curr_time.year,
-        month=curr_time.month,
-        day=curr_time.day,
-        hour=curr_time.hour,
-        )
+    if len(day_events)==0:
+        return day_events
+    curr_hour=datetime.now().hour
+    print(curr_hour)
     for event in day_events:
-        event_datetime=datetime(
-            year=my_year,
-            month=my_month,
-            day=my_day,
-            hour=event.tm.hour,
-            minute=event.tm.minute
-            )
-        if date_time_now < event_datetime:
-            Event.objects.filter(pk=event.id).update(status='ACTIVE')
-        else:
+        if event.tm.hour==curr_hour:
+            Event.objects.filter(pk=event.id).update(status='In processing')
+        elif event.tm.hour<curr_hour:
             Event.objects.filter(pk=event.id).update(status='passed')
-    return Event.objects.all().filter(dt=dt).order_by('tm')
+        else:
+            break
+    query_set=Event.objects.all().filter(dt=date.today()).order_by('tm')
+    return query_set
 
 def days_to_events(month:list[list[date]])->dict[date:list[Event]]:
     events_list=[]
@@ -134,24 +127,13 @@ def events_day(request,date_string):
     }
     return render(request, 'calendar/day_card.html',context=context)
 
-def event_status_handler(query_set):
-    curr_time=datetime.now()
-    date_time_now=datetime(
-            year=curr_time.year,
-            month=curr_time.month,
-            day=curr_time.day,
-            hour=curr_time.hour,
-            )
-    for event in query_set:
-        event_datetime=datetime(
-            year=my_year,
-            month=my_month,
-            day=my_day,
-            hour=event.tm.hour,
-            minute=event.tm.minute
-            )
-        if date_time_now < event_datetime:
-            Event.objects.filter(pk=event.id).update(status='ACTIVE')
-        else:
-            Event.objects.filter(pk=event.id).update(status='passed')
-    return query_set
+# def event_status_handler(query_set):
+#     curr_hour=datetime.now().hour
+#     event_hour=0
+#     while event_hour<curr_hour:
+#         for event in query_set:
+#             event_hour=event.tm.
+#             Event.objects.filter(pk=event.id).update(status='ACTIVE')
+#         else:
+#             Event.objects.filter(pk=event.id).update(status='passed')
+#     return query_set
