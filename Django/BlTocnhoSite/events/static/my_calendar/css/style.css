@@ -8,7 +8,7 @@
 }
 
 .calendar_table{
-    font-size: small;
+    font-size: x-large;
     border: solid;
     width: 100%;
     height: auto;
@@ -29,16 +29,115 @@
 .event_cell{
     display: flex;
     flex-wrap: wrap;
+    font-size: small;
 
 }
 
+.event_row{
+    border-bottom: double;
+}
 
-.weekdays{
-
+.event_table{
+    font-size: small;
 }
 
 .day_number{
     text-align: right;
     font-size: large;
 
+}
+
+.event_col{
+    text-align: left;
+    width: 25%;
+    max-width: 25%;
+}
+
+@-webkit-keyframes flicker {
+    50% {background-size: 7px 7px, 3px 3px;}
+    100% {background-size: 3px 3px, 7px 7px;}
+}
+@keyframes flicker {
+    50% {background-size: 7px 7px, 3px 3px;}
+    100% {background-size: 3px 3px, 7px 7px;}
+}
+#status_blink_color {
+    position: relative;
+    font-weight: bold;
+    color: #12570d;
+}
+#status_blink_color:before {
+    content: "";
+    position:absolute; top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(rgba(255,255,255,1) 1px, rgba(255,255,255,0) 1px), radial-gradient(rgba(255,255,255,1) 1px, rgba(255,255,255,0) 1px);
+    background-size: 3px 3px, 7px 7px;
+    background-position: 0% 50%;
+    -webkit-animation: flicker .5s linear infinite alternate;
+    animation: flicker .5s linear infinite alternate;
+}
+
+
+.link_for_event_day{
+    font-size: small;
+    color: blueviolet;
+    text-decoration: none;
+}
+
+.table_div{
+    width: 60%;
+}
+
+.non_table_div{
+    width: 40%;
+    border: solid;
+    border-color: coral;
+}
+.day_table{
+    font-size: small;
+    border: solid;
+    width: 100%;
+    height: auto;
+}
+
+
+.day_content{
+    display: flex;
+}
+
+
+.counter{
+    width: 3%;
+    min-width: 3%;
+}
+
+.tm{
+    width: 7%;
+    min-width: 8%;
+}
+
+.name{
+    width: 30%;
+    min-width: 30%;
+}
+
+.category{
+    width: 10%;
+    min-width: 10%;
+}
+
+.status{
+    width: 16%;
+    min-width: 16%;
+}
+
+.desc{
+    width: 20%;
+    min-width: 20%;
+}
+
+.actions{
+    width: 14%;
+    min-width: 14%;
 }

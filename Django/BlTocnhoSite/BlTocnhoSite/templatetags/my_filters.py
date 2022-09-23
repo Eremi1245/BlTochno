@@ -1,7 +1,7 @@
-from datetime import date
+from datetime import date, time
 from django import template
 from django.template.defaulttags import register
-
+from events.utils import status_choise_for_tag_filter
 register = template.Library()
 
 @register.filter
@@ -41,7 +41,16 @@ def month_to_string(weekday:int):
         weekday='Декабря'
     return weekday
 
+@register.filter
+def good_dt(bad_tm:time):
+    return bad_tm.strftime('%H: %M')
+
 
 @register.filter
 def dt_handler(dt:date)->int:
     return f'{dt.day} {month_to_string(dt.month)}'
+
+
+@register.filter
+def status_handler(status:str)->str:
+    return status_choise_for_tag_filter[status]

@@ -1,5 +1,5 @@
 from collections import defaultdict
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, time, timedelta
 from django.shortcuts import render
 from django.http import HttpResponse
 
@@ -8,6 +8,7 @@ from events.models import Event
 today=date.today()
 my_year=today.year
 my_month=today.month
+my_day=today.day
 
 
 def calendar(request,year:int=None,month:int=None):
@@ -48,9 +49,7 @@ def event(request,event_id):
 
 def get_all_events(dt:date):
     day_events=Event.objects.all().filter(dt=dt).order_by('tm')
-    day_events_dict
-    for event in day_events:
-
+    day_events=event_status_handler(day_events)
     return day_events
 
 def days_to_events(month:list[list[date]])->dict[date:list[Event]]:
@@ -64,7 +63,6 @@ def days_to_events(month:list[list[date]])->dict[date:list[Event]]:
             day_dict['events']=get_all_events(day)
             week_events.append(day_dict)
         events_list.append(week_events)
-    print(events_list)
     return events_list
 
 def add_event(request):
@@ -110,3 +108,32 @@ def int_to_weekday(weekday:int):
     elif weekday==6:
         weekday='Воскресенье'
     return weekday
+
+def events_day(request,date_string):
+    events=get_all_events(date_string)
+    context={
+        'events': events,
+    }
+    return render(request, 'calendar/day_card.html',context=context)
+
+def event_status_handler(query_set):
+    curr_time=datetime.now()
+    date_time_now=datetime(
+            year=curr_time.year,
+            month=curr_time.month,
+            day=curr_time.day,
+            hour=curr_time.hour,
+            )
+    for event in query_set:
+        event_datetime=datetime(
+            year=my_year,
+            month=my_month,
+            day=my_day,
+            hour=event.tm.hour,
+            minute=event.tm.minute
+            )
+        if date_time_now < event_datetime:
+            Event.objects.filter(pk=event.id).update(status='ACTIVE')
+        else:
+            Event.objects.filter(pk=event.id).update(status='passed')
+    return query_set
