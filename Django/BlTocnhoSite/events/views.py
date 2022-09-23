@@ -49,8 +49,26 @@ def event(request,event_id):
 
 def get_all_events(dt:date):
     day_events=Event.objects.all().filter(dt=dt).order_by('tm')
-    day_events=event_status_handler(day_events)
-    return day_events
+    curr_time=datetime.now()
+    date_time_now=datetime(
+        year=curr_time.year,
+        month=curr_time.month,
+        day=curr_time.day,
+        hour=curr_time.hour,
+        )
+    for event in day_events:
+        event_datetime=datetime(
+            year=my_year,
+            month=my_month,
+            day=my_day,
+            hour=event.tm.hour,
+            minute=event.tm.minute
+            )
+        if date_time_now < event_datetime:
+            Event.objects.filter(pk=event.id).update(status='ACTIVE')
+        else:
+            Event.objects.filter(pk=event.id).update(status='passed')
+    return Event.objects.all().filter(dt=dt).order_by('tm')
 
 def days_to_events(month:list[list[date]])->dict[date:list[Event]]:
     events_list=[]
