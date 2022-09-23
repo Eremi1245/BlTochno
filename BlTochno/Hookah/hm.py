@@ -1,10 +1,10 @@
 from hashlib import md5
 from importlib.abc import SourceLoader
-from BlTochno.BlTochno.Hookah.wordanalayzer import WordsAnalayzer
-from BlTochno.BlTochno.common_utils.htmlcollector import HtmlCollector
-from BlTochno.BlTochno.common_utils.htmlparser import HtmlParser
-from BlTochno.BlTochno.common_utils.urlobject import UrlObject
-from BlTochno.BlTochno.Hookah.hooka_settings import sites_with_mixes
+from BlTochno.Hookah.wordanalayzer import WordsAnalayzer
+from BlTochno.common_utils.htmlcollector import HtmlCollector
+from BlTochno.common_utils.htmlparser import HtmlParser
+from BlTochno.common_utils.urlobject import UrlObject
+from BlTochno.Hookah.hooka_settings import sites_with_mixes
 from collections import defaultdict
 
 class HookaMaster:

@@ -130,3 +130,5 @@ dmypy.json
 
 /DataBase/const_for_alembic.py
 /Django/BlTocnhoSite/secret.py
+main.py
+secret.py

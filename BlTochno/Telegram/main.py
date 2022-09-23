@@ -2,7 +2,13 @@ from copy import deepcopy
 from datetime import datetime
 from telegram_bot_calendar import DetailedTelegramCalendar, LSTEP
 from telebot import TeleBot, types
+
+# from BlTochno.BlTochno.DataBase.models import Event, Category
+# from BlTochno.BlTochno.DataBase.session import Sessn
+# from BlTochno.BlTochno.Telegram.commands import add_to_data, get_object, my_day
+from BlTochno.const import default_response
 from BlTochno.other.supportive_classes import Singleton
+from BlTochno.Telegram.commands import my_day
 from secret import TOKEN
 
 
@@ -22,11 +28,10 @@ def main():
             all_commands='\n'.join(tg_commands)
             bot.send_message(message.from_user.id, all_commands)
 
-    # @bot.message_handler(commands=['my_day'])
-    # def get_my_day(message):
-    #     ma_day=my_day(Event)
-    #     answer='\n'.join([f'{i+1}.{ma_day[i].name} ({ma_day[i].desc}) - {ma_day[i].tm}' for i in range(len(ma_day))])
-    #     bot.send_message(message.from_user.id, answer)
+    @bot.message_handler(commands=['my_day'])
+    def get_my_day(message):
+        schedule=my_day()
+        bot.send_message(message.from_user.id, schedule)
 
     # @bot.message_handler(commands=['my_week'])
     # def get_my_week(message):

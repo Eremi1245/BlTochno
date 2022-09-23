@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load my_filters %}
+{% block title %}Events Day!!!{% endblock  %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'my_calendar/css/style.css' %}">
+<div class="day_content">
+  <div class="table_div">
+    <table title="Твое расписание" class="day_table">
+      {% for event in events%}
+      <tr class="my_row">
+          <th class="event_col counter">#{{forloop.counter}}</th>
+          <th class="event_col tm">{{event.tm|good_dt}}</th>
+          <th class="event_col name" >{{event.name}}</th>
+          <th class="event_col category">({{event.category}})</th>
+          <th class="event_col desc">{{evet.desc}}</th>
+          <th id ="status_blink_color" class="event_col status">{{event.status|status_handler}}</th>
+          <th class="event_col actions">
+            <a href=""><img src="{% static 'my_calendar/img/succes.png' %}" alt="Выполненно" width="20" height="20"></a>
+            <a href=""><img src="{% static 'my_calendar/img/no_succes.png' %}" alt="Не выполненно" width="20" height="20"></a>
+            <a href=""><img src="{% static 'my_calendar/img/pending.png' %}" alt="Перенести" width="20" height="20"></a>
+            <a href=""><img src="{% static 'my_calendar/img/cancel.png' %}" alt="Отменить" width="20" height="20"></a>
+          </th>
+      </tr>
+      {%endfor%}
+    </table>
+  </div>
+  <div class="non_table_div">
+
+  </div>
+</div>
+{%endblock%}
+
