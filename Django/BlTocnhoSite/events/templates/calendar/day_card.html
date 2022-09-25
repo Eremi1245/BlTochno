@@ -17,7 +17,7 @@
           <th class="event_col tm">{{event.tm|good_dt}}</th>
           <th class="event_col name" >{{event.name}}</th>
           <th class="event_col category">({{event.category}})</th>
-          <th class="event_col desc">{{evet.desc}}</th>
+          <th class="event_col desc">{{event.desc}}</th>
           {%if not event.status|in_processig_handler:'In processing' %}
             <th  class="event_col status">{{event.status|status_handler}}</th>
           {%else%}
