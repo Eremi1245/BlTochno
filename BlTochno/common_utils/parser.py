@@ -1,5 +1,8 @@
 import re
 
+from BlTochno.common_utils.errors import RegexErrror
+from BlTochno.common_utils.log import LogDecorator
+
 
 class Parser:
     """Base parser class.
@@ -9,6 +12,7 @@ class Parser:
         self.regex = regex
 
     def start(self, html: str)->list[str]:
+        __name__= self.regex[:10]
         """Accepts html, parses, returns a list with results
 
         Args:
@@ -19,7 +23,12 @@ class Parser:
         """
         html = html.replace('\n', '')
         result = re.findall(self.regex, html)
+        if not result:
+            raise RegexErrror(f'Регулярка {self.regex} вернула None\nHtml\n{html}')
         return result
+
+    def __str__(self) -> str:
+        return self.regex
 
 
 class NNKalyanDecorator(Parser):
