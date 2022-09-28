@@ -31,6 +31,24 @@ class Parser:
         return self.regex
 
 
+class MultiParser(Parser):
+
+    def __init__(self, regexes: list[str]):
+        self.regex=regexes
+
+
+    def start(self, html: str) -> list[str]:
+        html = html.replace('\n', '')
+        for reg in self.regex:
+            result = re.findall(reg, html)
+            if not result:
+                continue
+            check_result=[all(match) for match in result]
+            if all(check_result):
+                print(result)
+                return result
+        raise RegexErrror(f'Все регуляки вернули плохой ответ')
+
 class NNKalyanDecorator(Parser):
 
     def __init__(self, regex: str):

@@ -3,7 +3,7 @@ from BlTochno.common_utils.htmlcollector import HtmlCollector
 from BlTochno.common_utils.htmlparser import HtmlParser
 from BlTochno.common_utils.log import LogDecorator
 from BlTochno.common_utils.urlobject import UrlObject
-from BlTochno.common_utils.parser import Parser
+from BlTochno.common_utils.parser import MultiParser, Parser
 import requests
 
 
@@ -136,6 +136,12 @@ class SiteTreeBuilder:
 url_parsers={
     'https://hookah-cat.online/today-we-smoke/?limit=80':[
         Parser(regex='class=\"caption\".*?href=\"(.*?)\"'),
-        Parser(regex='(?:<span style=\"caret-color: rgb\(.*?\); text-size-adjust: auto;\">|)(?:<br>|)(.{3,20})<\/span><a.*?>(.*?)<\/a><span style=\"caret-color: rgb\(.*?\); text-size-adjust: auto;\">.*?(\d+|)%*|<br><\/span>(?:<span style=\"background-color: rgb\(.*?\);\">|)(.*?)\"(.*?)\".*?<span style=\"caret-color: rgb\(0, 0, 0\); text-size-adjust: auto;\">.*?(\d+)%|(?:<span style="caret-color: rgb\(.*?\); text-size-adjust: auto;">|<br>)(?:<br>|)([\w,\s]{1,15})-(.{1,19}) (\d\d)')
+        MultiParser(regexes=[
+            '(?:<span style=\"caret-color: rgb\(.*?\); (?:text-size-adjust: auto|background-color: transparent);\">|)(?:<br>|)(.{3,20})<\/span><a.*?>(.*?)<\/a><span style=\"caret-color: rgb\(.*?\); (?:text-size-adjust: auto|background-color: transparent);\">.*?(\d+)%*',
+            '<a href=\"https://hookah-cat\.online/flavors/.{1,25}/.{1,25}/.*?\.html\" target=\"_blank\">(.*?) \"(.*?)\"\s*<\/a><span style=\"caret-color: rgb\(.*?\); text-size-adjust: auto;\">.*?(\d\d)%',
+            '<br><\/span>(?:<span style=\"background-color: rgb\(.*?\);\">|)(.*?)\"(.*?)\".*?<span style=\"caret-color: rgb\(0, 0, 0\); text-size-adjust: auto;\">.*?(\d+)%',
+            '(?:<span style=\"caret-color: rgb\(.*?\); text-size-adjust: auto;\">|<br>)(?:<br>|)([\w,\s]{1,15})-(.{1,19}) (\d\d)'
+            ]
+            )
         ]
 }

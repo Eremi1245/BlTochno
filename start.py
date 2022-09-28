@@ -22,5 +22,5 @@ from BlTochno.common_utils.urlobject import UrlObject
 tree=SiteTreeBuilder(
     url_parsers=url_parsers
 )
-print(tree.tree)
-# print(tree_traversal(tree.tree))
+
+print(tree_traversal(tree.tree))
