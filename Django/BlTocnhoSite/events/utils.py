@@ -18,5 +18,6 @@ status_choise_for_tag_filter={
     'NO_SUCCES' :"Не выполненное",
     'PENDING' :'Отложенное',
     'CANCEL' :'Отмененно',
-    'In processing':'Выполняется'
+    'In processing':'Выполняется',
+    'passed':'Прошло'
 }

@@ -45,12 +45,17 @@ def month_to_string(weekday:int):
 def good_dt(bad_tm:time):
     return bad_tm.strftime('%H: %M')
 
-
 @register.filter
 def dt_handler(dt:date)->int:
     return f'{dt.day} {month_to_string(dt.month)}'
 
-
 @register.filter
 def status_handler(status:str)->str:
     return status_choise_for_tag_filter[status]
+
+@register.filter
+def in_processig_handler(status:str,right_status:str)->bool:
+    if status==right_status:
+        return True
+    else:
+        return False
