@@ -76,8 +76,10 @@ class Page:
         if self._url:
             try:
                 _html=url_store[self._url]
+                print('Есть')
             except KeyError:
                 _html=requests.get(self._url,timeout=15)
+                url_store[self._url]=_html
             self._html=_html.text
 
     @LogDecorator()
