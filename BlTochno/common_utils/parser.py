@@ -1,8 +1,26 @@
 import re
+from traceback import print_tb
 
 from BlTochno.common_utils.errors import RegexErrror
 from BlTochno.common_utils.log import LogDecorator
 
+
+class RegexResultChecker:
+
+
+    def kalyan_kot(self,results):
+        if not results or len(results)<2:
+            return False
+        else:
+            special_matchs=[]
+            check_result=[all(match) if len(match)==3 else special_matchs.append(match) for match in results]
+            if special_matchs:
+                results=[(match[2],match[3],match[4]) for match in results]
+                check_result=[all(match) if len(match)==3 else special_matchs.append(match) for match in results]
+            if all(check_result):
+                return True
+            else:
+                return False
 
 class Parser:
     """Base parser class.
@@ -12,7 +30,6 @@ class Parser:
         self.regex = regex
 
     def start(self, html: str)->list[str]:
-        __name__= self.regex[:10]
         """Accepts html, parses, returns a list with results
 
         Args:
@@ -21,33 +38,26 @@ class Parser:
         Returns:
             list [str]: list with results of parsing
         """
-        html = html.replace('\n', '')
-        result = re.findall(self.regex, html)
-        if not result:
-            raise RegexErrror(f'Регулярка {self.regex} вернула None\nHtml\n{html}')
-        return result
+        try:
+            html = html.replace('\n', '')
+            result = re.findall(self.regex, html)
+            return result
+        except Exception as er:
+            print(er)
 
     def __str__(self) -> str:
         return self.regex
 
 
-class MultiParser(Parser):
+class KotParser(Parser):
 
     def __init__(self, regexes: list[str]):
         self.regex=regexes
 
 
     def start(self, html: str) -> list[str]:
-        html = html.replace('\n', '')
-        for reg in self.regex:
-            result = re.findall(reg, html)
-            if not result:
-                continue
-            check_result=[all(match) for match in result]
-            if all(check_result):
-                print(result)
-                return result
-        raise RegexErrror(f'Все регуляки вернули плохой ответ')
+        result=set(super().start(html))
+        return result
 
 class NNKalyanDecorator(Parser):
 
@@ -68,3 +78,5 @@ class NNKalyanDecorator(Parser):
             return right_lst_components
         except Exception as er:
             print(er)
+
+

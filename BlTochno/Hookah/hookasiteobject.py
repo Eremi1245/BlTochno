@@ -3,7 +3,7 @@ from BlTochno.common_utils.htmlcollector import HtmlCollector
 from BlTochno.common_utils.htmlparser import HtmlParser
 from BlTochno.common_utils.log import LogDecorator
 from BlTochno.common_utils.urlobject import UrlObject
-from BlTochno.common_utils.parser import MultiParser, Parser
+from BlTochno.common_utils.parser import KotParser, Parser, RegexResultChecker
 import requests
 
 
@@ -52,14 +52,15 @@ class HookaSiteObject:
     #     #     return url_obj
 
 
-
+url_store=dict()
 class Page:
 
-    def __init__(self,parsers:list[Parser],url:str=None) -> None:
+
+    def __init__(self,parsers:list[Parser]=None,url:str=None,data:list=None) -> None:
         self._url:str=url
         self._parsers:Parser=parsers
         self._html:str=None
-        self._data:list[Page]=None
+        self._data:list[Page]=data
         self.get_html()
     
     @property
@@ -73,24 +74,30 @@ class Page:
     @LogDecorator()
     def get_html(self):
         if self._url:
-            _html=requests.get(self._url)
+            try:
+                _html=url_store[self._url]
+            except KeyError:
+                _html=requests.get(self._url,timeout=15)
             self._html=_html.text
 
     @LogDecorator()
     def parse_data(self):
+        print(self._url)
         if len(self._parsers)==1:
-            self._data=self._parsers[0].start(self._html)
+            _data=self._parsers[0].start(self._html)
+            self._data=[Page(data=[dt]) for dt in _data]
         else:
             _data=self._parsers[0].start(self._html)
             self._data=[Page(parsers=self._parsers[1:],url=url) for url in _data]
             for page in self._data:
                 page.parse_data()
 
-    def __repr__(self) -> str:
-        if self._url:
-            return self._url
-        else:
-            return self.data
+
+    # def __repr__(self) -> str:
+    #     if self._url:
+    #         return self._url
+    #     else:
+    #         return self.data
 
 def tree_traversal(page:Page)->list[str]:
     result=[]
@@ -132,16 +139,10 @@ class SiteTreeBuilder:
 
 
 
-
 url_parsers={
     'https://hookah-cat.online/today-we-smoke/?limit=80':[
         Parser(regex='class=\"caption\".*?href=\"(.*?)\"'),
-        MultiParser(regexes=[
-            '(?:<span style=\"caret-color: rgb\(.*?\); (?:text-size-adjust: auto|background-color: transparent);\">|)(?:<br>|)(.{3,20})<\/span><a.*?>(.*?)<\/a><span style=\"caret-color: rgb\(.*?\); (?:text-size-adjust: auto|background-color: transparent);\">.*?(\d+)%*',
-            '<a href=\"https://hookah-cat\.online/flavors/.{1,25}/.{1,25}/.*?\.html\" target=\"_blank\">(.*?) \"(.*?)\"\s*<\/a><span style=\"caret-color: rgb\(.*?\); text-size-adjust: auto;\">.*?(\d\d)%',
-            '<br><\/span>(?:<span style=\"background-color: rgb\(.*?\);\">|)(.*?)\"(.*?)\".*?<span style=\"caret-color: rgb\(0, 0, 0\); text-size-adjust: auto;\">.*?(\d+)%',
-            '(?:<span style=\"caret-color: rgb\(.*?\); text-size-adjust: auto;\">|<br>)(?:<br>|)([\w,\s]{1,15})-(.{1,19}) (\d\d)'
-            ]
-            )
+        KotParser(regexes='<a href=\"(https://hookah-cat.online/flavors/\w.{1,80}html)\"'),
+        Parser(regex='class=\"prodprice\">(.*?)р.<.*?class=\"(?:in-stock|out-of-stock)\">(.*?)<.*?Производитель:\s*(?:<\/span>|)(?:<a.*?>|)(.*?)<.*?Модель:\s*(?:<\/span>|)(.*?)<.*?Крепость:(.*?)<.*?(?:Нарезка:|)(.*?)<.*?Дымность:(.*?)<')
         ]
 }
