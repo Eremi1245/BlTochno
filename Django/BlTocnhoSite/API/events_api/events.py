@@ -30,8 +30,13 @@ class EventViewSet(viewsets.ViewSet):
         serializer = EventSerializer(user)
         return Response(serializer.data)
 
-    def update(self, request, pk=None):
-        pass
+    def update(self, request, pk=None,updt_status=None):
+        try:
+            Event.objects.filter(pk=id).update(status=updt_status)
+            return Response(status.HTTP_200_OK)
+        except Exception as er:
+            print(er)
+            return Response(status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):
         pass

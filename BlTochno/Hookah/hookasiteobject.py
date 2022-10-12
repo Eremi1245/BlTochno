@@ -110,7 +110,6 @@ def tree_traversal(page:Page)->list[str]:
     result+=page.data
     return result
 
-    
 class SiteTreeBuilder:
 
 
@@ -137,9 +136,6 @@ class SiteTreeBuilder:
         if page.url:
             return 
         return page.data
-
-
-
 
 url_parsers={
     'https://hookah-cat.online/today-we-smoke/?limit=80':[

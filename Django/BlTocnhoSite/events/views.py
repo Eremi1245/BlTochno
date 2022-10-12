@@ -1,9 +1,13 @@
 from collections import defaultdict
 from datetime import date, datetime, time, timedelta
+
+import requests
 from django.shortcuts import render
 from django.http import HttpResponse
 
 from events.models import Event
+
+from secret import home_url
 
 today = date.today()
 my_year = today.year
@@ -76,10 +80,6 @@ def days_to_events(month: list[list[date]]) -> dict[date:list[Event]]:
         events_list.append(week_events)
     return events_list
 
-def add_event(request):
-    req = request
-    print('hiii')
-
 def calendar_builder(year: int = None, month: int = None) -> list[list[date]]:
     start_day = date(year, month, 1)
     if month == 12:
@@ -124,6 +124,10 @@ def events_day(request, date_string):
     events = get_all_events(date_string)
     context = {
         'events': events,
+        'date_string':date_string
     }
     return render(request, 'calendar/day_card.html', context=context)
 
+def event_action(request,id,action):
+    resp=requests.post(home_url+f'api/events/{id}/{action}').status_code
+    print(resp)

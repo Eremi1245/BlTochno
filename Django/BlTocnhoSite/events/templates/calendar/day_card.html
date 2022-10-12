@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="{% static 'my_calendar/css/style.css' %}">
 <div class="day_content">
   <div class="table_div">
+    <p id="date_string" class="hide_content">{{date_string}}</p>
     <table title="Твое расписание" class="day_table">
       {% for event in events%}
         {%if event.status|in_processig_handler:'passed' %}
@@ -24,10 +25,10 @@
             <th id ="status_blink_color" class="event_col status">{{event.status|status_handler}}</th>
           {%endif%}
           <th class="event_col actions">
-            <a href=""><img src="{% static 'my_calendar/img/succes.png' %}" alt="Выполненно" width="20" height="20"></a>
-            <a href=""><img src="{% static 'my_calendar/img/no_succes.png' %}" alt="Не выполненно" width="20" height="20"></a>
-            <a href=""><img src="{% static 'my_calendar/img/pending.png' %}" alt="Перенести" width="20" height="20"></a>
-            <a href=""><img src="{% static 'my_calendar/img/cancel.png' %}" alt="Отменить" width="20" height="20"></a>
+            <input id="succes_button" type="image" src="{% static 'my_calendar/img/succes.png' %}" alt="Выполненно" width="20" height="20">
+            <input id="no_succes_button" type="image" src="{% static 'my_calendar/img/no_succes.png' %}" alt="Выполненно" width="20" height="20">
+            <input id="pending_button" type="image" src="{% static 'my_calendar/img/pending.png' %}" alt="Выполненно" width="20" height="20">
+            <input id="cancel_button" type="image" src="{% static 'my_calendar/img/cancel.png' %}" alt="Выполненно" width="20" height="20">
           </th>
       </tr>
       {%endfor%}
@@ -37,5 +38,7 @@
 
   </div>
 </div>
+<script src="{% static 'my_calendar/js/crud_events.js' %}"></script>
+<script src="{% static 'my_calendar/js/create_table.js' %}"></script>
 {%endblock%}
 

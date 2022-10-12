@@ -1,6 +1,6 @@
 .bltochno_table {
     width: auto;
-};
+}
 
 .calendar_header {
     display: flex;
@@ -140,4 +140,8 @@
 .actions{
     width: 14%;
     min-width: 14%;
+}
+
+.hide_content{
+    display: none;
 }
