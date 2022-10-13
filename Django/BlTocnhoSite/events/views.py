@@ -3,7 +3,7 @@ from datetime import date, datetime, time, timedelta
 
 import requests
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 from events.models import Event
 
@@ -129,5 +129,10 @@ def events_day(request, date_string):
     return render(request, 'calendar/day_card.html', context=context)
 
 def event_action(request,id,action):
-    resp=requests.post(home_url+f'api/events/{id}/{action}').status_code
-    print(resp)
+    if request.method == "POST" and request.is_ajax():
+        try:
+            Event.objects.filter(pk=id).update(status=action)
+            return JsonResponse({"success":True}, status=200)
+        except Exception:
+            return JsonResponse({"success": False}, status=400)
+    return JsonResponse({"success":False}, status=400)
