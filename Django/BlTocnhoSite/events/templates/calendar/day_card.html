@@ -7,12 +7,14 @@
 <div class="day_content">
   <div class="table_div">
     <p id="date_string" class="hide_content">{{date_string}}</p>
-    <table title="Твое расписание" class="day_table">
+    <table id="contactForm" title="Твое расписание" class="day_table">
       {% for event in events%}
         {%if event.status|in_processig_handler:'passed' %}
-            <tr class="my_row" style="background-color: grey;">
+            <tr id='event_{{event.id}}'class="my_row" style="background-color: grey;">
+        {%elif event.status|in_processig_handler:'SUCCES' %}
+            <tr id='event_{{event.id}}'class="my_row" style="background-color: greenyellow;">
         {%else%}
-          <tr class="my_row">
+          <tr id='event_{{event.id}}' class="my_row">
         {%endif%}
           <th class="event_col counter">#{{forloop.counter}}</th>
           <th class="event_col tm">{{event.tm|good_dt}}</th>
@@ -25,8 +27,9 @@
             <th id ="status_blink_color" class="event_col status">{{event.status|status_handler}}</th>
           {%endif%}
           <th class="event_col actions">
-            <form id = "contactForm" method= "POST">{% csrf_token %}
-              <input id="succes_button" type="image" src="{% static 'my_calendar/img/succes.png' %}" alt="Выполненно" width="20" height="20">
+            <form  method= "POST" >
+              {% csrf_token %}
+              <input value="{{event.id}} SUCCES" id="succes_button" type="image" src="{% static 'my_calendar/img/succes.png' %}" alt="Выполненно" width="20" height="20">
             </form>
 
             <input id="no_succes_button" type="image" src="{% static 'my_calendar/img/no_succes.png' %}" alt="Выполненно" width="20" height="20">
@@ -44,17 +47,25 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
   $("#contactForm").submit(function(e){
-    // prevent from normal form behaviour
         e.preventDefault();
-        // serialize the form data
-        var serializedData = $(this).serialize();
+        console.log(e.target.childNodes)
+        var values=e.target.lastElementChild.attributes[0].value.split(' ')
         $.ajax({
             type : 'POST',
             url :  "{% url 'event_action' %}",
-            data : {'id':1,'action':'SUCCES'}},
+            contentType: 'application/json',
+            headers : {"X-CSRFToken": '{{ csrf_token }}'},
+            dataType: 'json',
+            data : {
+              'id':values[0],
+              'action':values[1],
+              'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
             success : function(response){
             //reset the form after successful submit
                     console.log(response)
+                    // var event_id='event_'+'{{event.id}}'
+                    // $("#event_id")[0].reset(); 
             },
             error : function(response){
                 console.log(response)

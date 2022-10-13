@@ -11,6 +11,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+
 from pathlib import Path
 from secret import DJANGO_SECRET_KEY
 
@@ -59,7 +60,7 @@ ROOT_URLCONF = 'BlTocnhoSite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates','events/templates','BlTocnhoSite/templates'],
+        'DIRS': ['templates', 'events/templates', 'BlTocnhoSite/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -69,7 +70,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
             ],
             'libraries':{
-            'my_filters': 'BlTocnhoSite.templatetags.my_filters',
+                'my_filters': 'BlTocnhoSite.templatetags.my_filters',
             }
         },
     },

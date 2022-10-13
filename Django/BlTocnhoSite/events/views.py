@@ -1,6 +1,7 @@
 from collections import defaultdict
 from datetime import date, datetime, time, timedelta
-
+from django.views.decorators.csrf import csrf_exempt
+import json
 import requests
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
@@ -48,24 +49,29 @@ def calendar(request, year: int = None, month: int = None):
     }
     return render(request, 'calendar/calendar.html', context=context)
 
+
 def event(request, event_id):
     return render(request, 'calendar/event_list.html')
+
 
 def get_all_events(dt: date):
     day_events = Event.objects.all().filter(dt=dt).order_by('tm')
     if len(day_events) == 0:
         return day_events
-    curr_hour = datetime(year=datetime.now().year,month=datetime.now().month,day=datetime.now().day,hour=datetime.now().hour)
+    curr_hour = datetime(year=datetime.now().year, month=datetime.now(
+    ).month, day=datetime.now().day, hour=datetime.now().hour)
     for event in day_events:
-        event_date_hour=datetime(year=event.dt.year,month=event.dt.month,day=event.dt.day,hour=event.tm.hour)
-        if event_date_hour == curr_hour:
+        event_date_hour = datetime(
+            year=event.dt.year, month=event.dt.month, day=event.dt.day, hour=event.tm.hour)
+        if event_date_hour == curr_hour and event.status=='ACTIVE':
             Event.objects.filter(pk=event.id).update(status='In processing')
-        elif event_date_hour < curr_hour:
+        elif event_date_hour < curr_hour and event.status=='ACTIVE':
             Event.objects.filter(pk=event.id).update(status='passed')
         else:
             break
     query_set = Event.objects.all().filter(dt=dt).order_by('tm')
     return query_set
+
 
 def days_to_events(month: list[list[date]]) -> dict[date:list[Event]]:
     events_list = []
@@ -79,6 +85,7 @@ def days_to_events(month: list[list[date]]) -> dict[date:list[Event]]:
             week_events.append(day_dict)
         events_list.append(week_events)
     return events_list
+
 
 def calendar_builder(year: int = None, month: int = None) -> list[list[date]]:
     start_day = date(year, month, 1)
@@ -103,6 +110,7 @@ def calendar_builder(year: int = None, month: int = None) -> list[list[date]]:
         index += 1
     return month
 
+
 def int_to_weekday(weekday: int):
     if weekday == 0:
         weekday = 'Понедельник'
@@ -120,19 +128,33 @@ def int_to_weekday(weekday: int):
         weekday = 'Воскресенье'
     return weekday
 
+
 def events_day(request, date_string):
     events = get_all_events(date_string)
     context = {
         'events': events,
-        'date_string':date_string
+        'date_string': date_string
     }
     return render(request, 'calendar/day_card.html', context=context)
 
-def event_action(request,id,action):
-    if request.method == "POST" and request.is_ajax():
+
+def is_ajax(request):
+    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+
+
+def parse_body(request):
+    body_unicode = request.body.decode('utf-8').split('&')
+    body_unicode = [item.split('=') for item in body_unicode]
+    body = {k: v for k, v in body_unicode}
+    return body
+
+
+def event_action(request):
+    if request.method == "POST" and is_ajax(request=request):
+        body = parse_body(request=request)
         try:
-            Event.objects.filter(pk=id).update(status=action)
-            return JsonResponse({"success":True}, status=200)
+            Event.objects.filter(pk=body['id']).update(status=body['action'])
+            return JsonResponse({"success": True}, status=200)
         except Exception:
             return JsonResponse({"success": False}, status=400)
-    return JsonResponse({"success":False}, status=400)
+    return JsonResponse({"success": False}, status=400)
