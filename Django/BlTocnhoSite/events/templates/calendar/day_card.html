@@ -52,8 +52,8 @@
       </tr>
       {%endfor%}
       <tr id='add_event_row'class="my_row">
-        <th class="event_col desc">
-          <button class="add_event_button">Добавить евент</button>
+        <th class="event_col">
+          <a class="w3-btn w3-margin-bottom" href="{%url 'new_event'%}" target="_blank">Добавить евент</a>
         </th>
       </tr>
     </table>
@@ -66,6 +66,7 @@
 <script>
   $("#contactForm").submit(function(e){
         e.preventDefault();
+        console.log(e)
         var values=e.target.lastElementChild.attributes[0].value.split(' ')
         $.ajax({
             type : 'POST',
@@ -79,7 +80,6 @@
               'csrfmiddlewaretoken': '{{ csrf_token }}'
             },
             success : function(response){
-            //reset the form after successful submit
                     var event_id='#event_'+values[0]
                     var status_id='#status_'+values[0]
                     if (values[1]=='SUCCES'){
@@ -106,5 +106,7 @@
         });
    });
 </script>
+
+
 {%endblock%}
 

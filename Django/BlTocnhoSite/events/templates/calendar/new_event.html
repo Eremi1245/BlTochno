@@ -3,5 +3,9 @@
 {% load my_filters %}
 {% block title %}Add new event{% endblock  %}
 {% block content %}
-  {{event_form}}
+<form action="{%url 'new_event'%}" method="post">
+    {% csrf_token %}
+    {{ event_form }}
+    <input type="submit" value="Submit">
+</form>
 {% endblock %}

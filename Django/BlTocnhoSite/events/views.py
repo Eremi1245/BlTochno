@@ -5,8 +5,10 @@ import json
 import requests
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
+from events.forms import AddEventForm
+from django.shortcuts import redirect
 
-from events.models import Event
+from events.models import Event, Category
 
 from secret import home_url
 
@@ -55,7 +57,7 @@ def event(request, event_id):
 
 
 def get_all_events(dt: date):
-    day_events = Event.objects.all().filter(dt=dt).order_by('tm')
+    day_events = Event.objects.filter(dt=dt).order_by('tm')
     if len(day_events) == 0:
         return day_events
     curr_hour = datetime(year=datetime.now().year, month=datetime.now(
@@ -63,13 +65,14 @@ def get_all_events(dt: date):
     for event in day_events:
         event_date_hour = datetime(
             year=event.dt.year, month=event.dt.month, day=event.dt.day, hour=event.tm.hour)
-        if event_date_hour == curr_hour and event.status=='ACTIVE':
+        if event_date_hour == curr_hour and event.status == 'ACTIVE':
             Event.objects.filter(pk=event.id).update(status='In processing')
-        elif event_date_hour < curr_hour and event.status=='ACTIVE':
+        elif event_date_hour < curr_hour and event.status == 'ACTIVE':
             Event.objects.filter(pk=event.id).update(status='passed')
         else:
             break
-    query_set = Event.objects.all().filter(dt=dt).order_by('tm')
+    query_set = Event.objects.filter(dt=dt).order_by('tm')
+    query_set=list(filter(lambda day: day.status != 'CANCEL', query_set))
     return query_set
 
 
@@ -158,3 +161,21 @@ def event_action(request):
         except Exception:
             return JsonResponse({"success": False}, status=400)
     return JsonResponse({"success": False}, status=400)
+
+
+def add_new(request):
+    categories = Category.objects.all()
+
+    if request.method == 'POST':
+        event_form = AddEventForm(request.POST or None)
+
+        if event_form.is_valid():
+            event = event_form.save(commit=False)
+            event.save()
+
+            return redirect('event_day', date_string=event.dt)
+        else:
+            return HttpResponse(event_form.errors)
+    else:
+        event_form = AddEventForm()
+    return render(request, 'calendar/new_event.html', {'event_form': event_form, 'categories': categories})
