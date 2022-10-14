@@ -6,13 +6,18 @@
 <link rel="stylesheet" href="{% static 'my_calendar/css/style.css' %}">
 <div class="day_content">
   <div class="table_div">
-    <p id="date_string" class="hide_content">{{date_string}}</p>
     <table id="contactForm" title="Твое расписание" class="day_table">
       {% for event in events%}
         {%if event.status|in_processig_handler:'passed' %}
-            <tr id='event_{{event.id}}'class="my_row" style="background-color: grey;">
+          <tr id='event_{{event.id}}'class="my_row" style="background-color: rgb(77, 51, 3);">
         {%elif event.status|in_processig_handler:'SUCCES' %}
-            <tr id='event_{{event.id}}'class="my_row" style="background-color: greenyellow;">
+          <tr id='event_{{event.id}}'class="my_row" style="background-color: greenyellow;opacity: 0.4;">
+        {%elif event.status|in_processig_handler:'NO_SUCCES' %}
+          <tr id='event_{{event.id}}'class="my_row" style="background-color: indianred;opacity: 0.4;">
+        {%elif event.status|in_processig_handler:'PENDING' %}
+          <tr id='event_{{event.id}}'class="my_row" style="background-color: rgb(201, 231, 144);opacity: 0.4;">
+        {%elif event.status|in_processig_handler:'CANCEL' %}
+          <tr id='event_{{event.id}}'class="my_row" style="background-color: grey;opacity: 0.4;">
         {%else%}
           <tr id='event_{{event.id}}' class="my_row">
         {%endif%}
@@ -22,22 +27,35 @@
           <th class="event_col category">({{event.category}})</th>
           <th class="event_col desc">{{event.desc}}</th>
           {%if not event.status|in_processig_handler:'In processing' %}
-            <th  class="event_col status">{{event.status|status_handler}}</th>
+            <th  id="status_{{event.id}}" class="event_col status">{{event.status|status_handler}}</th>
           {%else%}
             <th id ="status_blink_color" class="event_col status">{{event.status|status_handler}}</th>
           {%endif%}
-          <th class="event_col actions">
+          <th class="event_col actions" style="display:flex ;">
             <form  method= "POST" >
               {% csrf_token %}
               <input value="{{event.id}} SUCCES" id="succes_button" type="image" src="{% static 'my_calendar/img/succes.png' %}" alt="Выполненно" width="20" height="20">
             </form>
-
-            <input id="no_succes_button" type="image" src="{% static 'my_calendar/img/no_succes.png' %}" alt="Выполненно" width="20" height="20">
-            <input id="pending_button" type="image" src="{% static 'my_calendar/img/pending.png' %}" alt="Выполненно" width="20" height="20">
-            <input id="cancel_button" type="image" src="{% static 'my_calendar/img/cancel.png' %}" alt="Выполненно" width="20" height="20">
+            <form  method= "POST" >
+              {% csrf_token %}
+              <input value="{{event.id}} NO_SUCCES" id="no_succes_button" type="image" src="{% static 'my_calendar/img/no_succes.png' %}" alt="Выполненно" width="20" height="20">
+            </form>
+            <form  method= "POST" >
+              {% csrf_token %}
+              <input value="{{event.id}} PENDING" id="pending_button" type="image" src="{% static 'my_calendar/img/pending.png' %}" alt="Выполненно" width="20" height="20">
+            </form>
+            <form  method= "POST" >
+              {% csrf_token %}
+              <input value="{{event.id}} CANCEL" id="cancel_button" type="image" src="{% static 'my_calendar/img/cancel.png' %}" alt="Выполненно" width="20" height="20">
+            </form>
           </th>
       </tr>
       {%endfor%}
+      <tr id='add_event_row'class="my_row">
+        <th class="event_col desc">
+          <button class="add_event_button">Добавить евент</button>
+        </th>
+      </tr>
     </table>
   </div>
   <div class="non_table_div">
@@ -48,7 +66,6 @@
 <script>
   $("#contactForm").submit(function(e){
         e.preventDefault();
-        console.log(e.target.childNodes)
         var values=e.target.lastElementChild.attributes[0].value.split(' ')
         $.ajax({
             type : 'POST',
@@ -63,9 +80,25 @@
             },
             success : function(response){
             //reset the form after successful submit
-                    console.log(response)
-                    // var event_id='event_'+'{{event.id}}'
-                    // $("#event_id")[0].reset(); 
+                    var event_id='#event_'+values[0]
+                    var status_id='#status_'+values[0]
+                    if (values[1]=='SUCCES'){
+                      $(event_id).css('background-color', 'greenyellow').css('opacity','0.4');
+                      $(status_id).text('Успешно выполненное');
+                    }
+                    else if(values[1]=='NO_SUCCES'){
+                      $(event_id).css('background-color', 'indianred').css('opacity','0.4');
+                      $(status_id).text('Не выполненное');
+                    }
+                    else if(values[1]=='PENDING'){
+                      $(event_id).css('background-color', 'rgb(201, 231, 144)').css('opacity','0.4');
+                      $(status_id).text('Отложенное');
+                    }
+                    else if(values[1]=='CANCEL'){
+                      $(event_id).css('background-color', 'grey').css('opacity','0.4');
+                      $(status_id).text('Отмененно');
+                    }
+
             },
             error : function(response){
                 console.log(response)
