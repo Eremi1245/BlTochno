@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load my_filters %}
+{% block title %}Habits{% endblock  %}
+{% block content %}
+    {% for habit in habits%}
+        <p>{{habit}}</p>
+    {% endfor%}
+{% endblock %}

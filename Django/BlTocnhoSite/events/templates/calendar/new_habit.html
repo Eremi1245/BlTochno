@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load my_filters %}
+{% block title %}Add new event{% endblock  %}
+{% block content %}
+<form action="{%url 'new_habit'%}" method="post">
+    {% csrf_token %}
+    <label for="category">Категория:</label><br>
+    <p><select id="category" name="category">
+        {% for category in categories%}
+        <option>{{category}}</option>
+        {%endfor%}
+    </select></p>
+    <label for="name">Привычка (название): </label><br>
+    <input type="text" id="name" name="name"><br>
+    <label for="event_name">Ивент: </label><br>
+    <input type="text" id="event_name" name="event_name"><br>
+    <label for="dt">Регулярная дата ивента: </label><br>
+    <input type="date" id="dt" name="dt"><br>
+    <label for="tm">Регулярное время ивента: </label><br>
+    <input type="time" id="tm" name="tm"><br>
+    <input type="submit" value="Submit">
+</form>
+<a class="w3-btn w3-margin-bottom" href="{%url 'new_category'%}" target="_blank">Добавить категорию</a>
+<script>
+    $(document).ready( function() {
+    var now = new Date();
+    var month = (now.getMonth() + 1);               
+    var day = now.getDate();
+    if (month < 10) 
+        month = "0" + month;
+    if (day < 10) 
+        day = "0" + day;
+    var today = now.getFullYear() + '-' + month + '-' + day;
+    $('#dt').val(today);
+});
+</script>
+{% endblock %}

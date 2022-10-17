@@ -5,10 +5,10 @@ import json
 import requests
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
-from events.forms import AddEventForm
+from events.forms import AddEventForm, AddCategoryForm
 from django.shortcuts import redirect
-
-from events.models import Event, Category
+from django.shortcuts import get_object_or_404
+from events.models import Event, Category, Habit, Habits_Events
 
 from secret import home_url
 
@@ -72,7 +72,7 @@ def get_all_events(dt: date):
         else:
             break
     query_set = Event.objects.filter(dt=dt).order_by('tm')
-    query_set=list(filter(lambda day: day.status != 'CANCEL', query_set))
+    query_set = list(filter(lambda day: day.status != 'CANCEL', query_set))
     return query_set
 
 
@@ -156,8 +156,12 @@ def event_action(request):
     if request.method == "POST" and is_ajax(request=request):
         body = parse_body(request=request)
         try:
-            Event.objects.filter(pk=body['id']).update(status=body['action'])
-            return JsonResponse({"success": True}, status=200)
+            if body['action']=='CANCEL':
+                Event.objects.filter(pk=body['id']).delete()
+                return JsonResponse({"success": True}, status=200)
+            else:
+                Event.objects.filter(pk=body['id']).update(status=body['action'])
+                return JsonResponse({"success": True}, status=200)
         except Exception:
             return JsonResponse({"success": False}, status=400)
     return JsonResponse({"success": False}, status=400)
@@ -179,3 +183,69 @@ def add_new(request):
     else:
         event_form = AddEventForm()
     return render(request, 'calendar/new_event.html', {'event_form': event_form, 'categories': categories})
+
+
+def add_new_category(request):
+    if request.method == 'POST':
+        category_form = AddCategoryForm(request.POST or None)
+
+        if category_form.is_valid():
+            category = category_form.save(commit=False)
+            category.save()
+
+            return redirect('new_event')
+        else:
+            return HttpResponse(category_form.errors)
+    else:
+        category_form = AddCategoryForm()
+    return render(request, 'calendar/new_category.html', {'category_form': category_form})
+
+
+def add_new_habbit(request):
+    categories = Category.objects.all()
+    if request.method == 'POST':
+        form_data = request.POST
+        category = get_object_or_404(categories, name=form_data['category'])
+        new_event = Event(
+            category=category,
+            name=form_data['event_name'],
+            dt=form_data['dt'],
+            tm=form_data['tm']
+        )
+        new_event.save()
+        dt = datetime.strptime(form_data['dt'], "%Y-%m-%d").date()
+        time_delta = timedelta(days=7)
+        year_end = date(year=my_year, month=12, day=31)
+        dt += time_delta
+        while dt <= year_end:
+            add_event = Event(
+                category=category,
+                name=form_data['event_name'],
+                dt=dt.strftime("%Y-%m-%d"),
+                tm=form_data['tm']
+            )
+            add_event.save()
+            dt += time_delta
+
+        new_habit = Habit(
+            category=category,
+            name=form_data['name'],
+        )
+        new_habit.save()
+        habit_event = Habits_Events(
+            habit_id=new_habit,
+            event_id=new_event
+
+        )
+        habit_event.save()
+        return redirect('calendar')
+    else:
+        return render(request, 'calendar/new_habit.html', {'categories': categories})
+
+
+def habits(request):
+    habits = Habit.objects.all()
+    context = {
+        'habits': habits
+    }
+    return render(request, 'calendar/habits_list.html', context=context)
