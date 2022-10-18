@@ -3,7 +3,7 @@
 {% load my_filters %}
 {% block title %}Events Day!!!{% endblock  %}
 {% block content %}
-<link rel="stylesheet" href="{% static 'my_calendar/css/style.css' %}">
+<link rel="stylesheet" type="text/css"  href="{% static 'my_calendar/css/style.css' %}">
 <div class="day_content">
   <div class="table_div">
     <table id="contactForm" title="Твое расписание" class="day_table">
@@ -33,17 +33,17 @@
         {%else%}
           <tr id='event_{{event.id}}'>
         {%endif%}
-          <th class="event_col counter">#{{forloop.counter}}</th>
-          <th class="event_col tm">{{event.tm|good_dt}}</th>
-          <th class="event_col name" >{{event.name}}</th>
-          <th class="event_col category">({{event.category}})</th>
-          <th class="event_col desc">{{event.desc}}</th>
+          <th>#{{forloop.counter}}</th>
+          <th>{{event.tm|good_dt}}</th>
+          <th >{{event.name}}</th>
+          <th>({{event.category}})</th>
+          <th>{{event.desc}}</th>
           {%if not event.status|in_processig_handler:'In processing' %}
-            <th  id="status_{{event.id}}" class="event_col status">{{event.status|status_handler}}</th>
+            <th  id="status_{{event.id}}">{{event.status|status_handler}}</th>
           {%else%}
-            <th id ="status_blink_color" class="event_col status">{{event.status|status_handler}}</th>
+            <th id ="status_blink_color">{{event.status|status_handler}}</th>
           {%endif%}
-          <th class="event_col actions">
+          <th class="actions">
             <form  method= "POST" >
               {% csrf_token %}
               <input value="{{event.id}} SUCCES" id="succes_button" type="image" src="{% static 'my_calendar/img/succes.png' %}" alt="Выполненно" width="20" height="20">
@@ -65,7 +65,7 @@
       {%endfor%}
       <tr id='add_event_row'class="my_row">
         <th class="event_col">
-          <a class="w3-btn w3-margin-bottom" href="{%url 'new_event'%}" target="_blank">Добавить евент</a>
+          <a class="add_btn" href="{%url 'new_event'%}"><span>Добавить евент</span></a> 
         </th>
       </tr>
     </tbody>

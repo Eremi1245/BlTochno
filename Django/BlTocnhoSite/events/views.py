@@ -219,6 +219,8 @@ def add_new_habbit(request):
         time_delta = timedelta(days=7)
         year_end = date(year=my_year, month=12, day=31)
         dt += time_delta
+        all_events = []
+        all_events.append(new_event)
         while dt <= year_end:
             add_event = Event(
                 category=category,
@@ -227,6 +229,7 @@ def add_new_habbit(request):
                 tm=form_data['tm']
             )
             add_event.save()
+            all_events.append(add_event)
             dt += time_delta
 
         new_habit = Habit(
@@ -234,12 +237,13 @@ def add_new_habbit(request):
             name=form_data['name'],
         )
         new_habit.save()
-        habit_event = Habits_Events(
-            habit_id=new_habit,
-            event_id=new_event
+        for event in all_events:
+            habit_event = Habits_Events(
+                habit_id=new_habit,
+                event_id=event
 
-        )
-        habit_event.save()
+            )
+            habit_event.save()
         return redirect('calendar')
     else:
         return render(request, 'calendar/new_habit.html', {'categories': categories})
@@ -251,3 +255,17 @@ def habits(request):
         'habits': habits
     }
     return render(request, 'calendar/habits_list.html', context=context)
+
+
+def habit_card(request, habit_id):
+    pass
+
+
+def delete_habit(request, habit_id):
+    habits_event = Habits_Events.objects.filter(habit_id=habit_id)
+    for habit_event in habits_event:
+        event = get_object_or_404(Event, id=habit_event.event_id.id)
+        event.delete()
+    habit = get_object_or_404(Habit, id=habits_event[0].habit_id.id)
+    habit.delete()
+    return redirect('habits')

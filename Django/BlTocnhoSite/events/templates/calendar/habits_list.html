@@ -3,9 +3,22 @@
 {% load my_filters %}
 {% block title %}Habits{% endblock  %}
 {% block content %}
-    {% for habit in habits%}
-        <p>{{habit}}</p>
-        <p>Удалить</p>
-        <p>Редактировать</p>
-    {% endfor%}
+<link rel="stylesheet" type="text/css"  href="{% static 'my_calendar/css/style.css' %}">
+<table class="day_table">
+	<thead>
+		<tr>
+			<th style="width:80%;">Name</th>
+
+		</tr>
+	</thead>
+	<tbody>
+        {% for habit in habits%}
+            <tr>
+                <td>{{habit.name}}</td>
+                <td><a class="add_btn" href="{%url 'habit' habit.id %}"><span>Edit</span></a> </td>
+                <td><a class="add_btn" href="{%url 'delete_habit' habit.id %}"><span>Delete</span></a> </td>
+            </tr>
+        {% endfor%}
+	</tbody>
+</table>
 {% endblock %}
