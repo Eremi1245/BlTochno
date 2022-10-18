@@ -25,7 +25,6 @@
     max-width: 14%;
 }
 
-
 .event_cell{
     display: flex;
     flex-wrap: wrap;
@@ -78,7 +77,6 @@
     animation: flicker .5s linear infinite alternate;
 }
 
-
 .link_for_event_day{
     font-size: small;
     color: blueviolet;
@@ -105,7 +103,6 @@
 .day_content{
     display: flex;
 }
-
 
 .counter{
     width: 3%;
