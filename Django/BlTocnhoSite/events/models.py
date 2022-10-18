@@ -32,7 +32,7 @@ class Event(models.Model):
     )
 
     status = models.CharField(
-        max_length=255, choices=status_choise, default=status_choise[0])
+        max_length=255, choices=status_choise, default='ACTIVE')
     desc = models.CharField(
         verbose_name='Подробное описание ивента', max_length=255,
         blank=True)

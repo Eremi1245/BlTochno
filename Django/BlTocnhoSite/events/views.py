@@ -156,11 +156,12 @@ def event_action(request):
     if request.method == "POST" and is_ajax(request=request):
         body = parse_body(request=request)
         try:
-            if body['action']=='CANCEL':
+            if body['action'] == 'CANCEL':
                 Event.objects.filter(pk=body['id']).delete()
                 return JsonResponse({"success": True}, status=200)
             else:
-                Event.objects.filter(pk=body['id']).update(status=body['action'])
+                Event.objects.filter(pk=body['id']).update(
+                    status=body['action'])
                 return JsonResponse({"success": True}, status=200)
         except Exception:
             return JsonResponse({"success": False}, status=400)
@@ -209,6 +210,7 @@ def add_new_habbit(request):
         new_event = Event(
             category=category,
             name=form_data['event_name'],
+            status='ACTIVE',
             dt=form_data['dt'],
             tm=form_data['tm']
         )

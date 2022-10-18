@@ -7,19 +7,31 @@
 <div class="day_content">
   <div class="table_div">
     <table id="contactForm" title="Твое расписание" class="day_table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Time</th>
+          <th>Event</th>
+          <th>Category</th>
+          <th>Description</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
       {% for event in events%}
         {%if event.status|in_processig_handler:'passed' %}
-          <tr id='event_{{event.id}}'class="my_row" style="background-color: rgb(77, 51, 3);">
+          <tr id='event_{{event.id}}' style="background-color: rgb(77, 51, 3);">
         {%elif event.status|in_processig_handler:'SUCCES' %}
-          <tr id='event_{{event.id}}'class="my_row" style="background-color: greenyellow;opacity: 0.4;">
+          <tr id='event_{{event.id}}' style="background-color: greenyellow;opacity: 0.4;">
         {%elif event.status|in_processig_handler:'NO_SUCCES' %}
-          <tr id='event_{{event.id}}'class="my_row" style="background-color: indianred;opacity: 0.4;">
+          <tr id='event_{{event.id}}' style="background-color: indianred;opacity: 0.4;">
         {%elif event.status|in_processig_handler:'PENDING' %}
-          <tr id='event_{{event.id}}'class="my_row" style="background-color: rgb(201, 231, 144);opacity: 0.4;">
+          <tr id='event_{{event.id}}' style="background-color: rgb(201, 231, 144);opacity: 0.4;">
         {%elif event.status|in_processig_handler:'CANCEL' %}
-          <tr id='event_{{event.id}}'class="my_row" style="background-color: grey;opacity: 0.4;">
+          <tr id='event_{{event.id}}' style="background-color: grey;opacity: 0.4;">
         {%else%}
-          <tr id='event_{{event.id}}' class="my_row">
+          <tr id='event_{{event.id}}'>
         {%endif%}
           <th class="event_col counter">#{{forloop.counter}}</th>
           <th class="event_col tm">{{event.tm|good_dt}}</th>
@@ -31,7 +43,7 @@
           {%else%}
             <th id ="status_blink_color" class="event_col status">{{event.status|status_handler}}</th>
           {%endif%}
-          <th class="event_col actions" style="display:flex ;">
+          <th class="event_col actions">
             <form  method= "POST" >
               {% csrf_token %}
               <input value="{{event.id}} SUCCES" id="succes_button" type="image" src="{% static 'my_calendar/img/succes.png' %}" alt="Выполненно" width="20" height="20">
@@ -56,6 +68,7 @@
           <a class="w3-btn w3-margin-bottom" href="{%url 'new_event'%}" target="_blank">Добавить евент</a>
         </th>
       </tr>
+    </tbody>
     </table>
   </div>
   <div class="non_table_div">
