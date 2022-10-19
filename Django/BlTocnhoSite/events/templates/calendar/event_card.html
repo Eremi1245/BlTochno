@@ -3,9 +3,9 @@
 {% load my_filters %}
 {% block title %}Add new event{% endblock  %}
 {% block content %}
-<form action="{%url 'habit' habit.id %}" method="post">
+<form action="{%url 'event' event.id %}" method="post">
     {% csrf_token %}
-    {{ habit_form }}
+    {{ event_form }}
     <input type="submit" value="Submit">
 </form>
 {% endblock %}

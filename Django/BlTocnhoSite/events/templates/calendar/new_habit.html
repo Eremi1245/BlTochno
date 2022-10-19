@@ -3,6 +3,7 @@
 {% load my_filters %}
 {% block title %}Add new event{% endblock  %}
 {% block content %}
+<link rel="stylesheet" type="text/css"  href="{% static 'my_calendar/css/style.css' %}">
 <form action="{%url 'new_habit'%}" method="post">
     {% csrf_token %}
     <label for="category">Категория:</label><br>
@@ -15,10 +16,23 @@
     <input type="text" id="name" name="name"><br>
     <label for="event_name">Ивент: </label><br>
     <input type="text" id="event_name" name="event_name"><br>
+    <input type="button" id="hider" value="Нажмите, чтобы спрятать текст" />
     <label for="dt">Регулярная дата ивента: </label><br>
     <input type="date" id="dt" name="dt"><br>
     <label for="tm">Регулярное время ивента: </label><br>
     <input type="time" id="tm" name="tm"><br>
+    <input class="hid_inp" hidden type="date" id="dt_2" name="dt_2"><br>
+    <input class="hid_inp" hidden type="time" id="tm_2" name="tm_2"><br>
+    <input class="hid_inp" hidden type="date" id="dt_3" name="dt_3"><br>
+    <input class="hid_inp" hidden type="time" id="tm_3" name="tm_3"><br>
+    <input class="hid_inp" hidden type="date" id="dt_4" name="dt_4"><br>
+    <input class="hid_inp" hidden type="time" id="tm_4" name="tm_4"><br>
+    <input class="hid_inp" hidden type="date" id="dt_5" name="dt_5"><br>
+    <input class="hid_inp" hidden type="time" id="tm_5" name="tm_5"><br>
+    <input class="hid_inp" hidden type="date" id="dt_6" name="dt_6"><br>
+    <input class="hid_inp" hidden type="time" id="tm_6" name="tm_6"><br>
+    <input class="hid_inp" hidden type="date" id="dt_7" name="dt_7"><br>
+    <input class="hid_inp" hidden type="time" id="tm_7" name="tm_7"><br>
     <input type="submit" value="Submit">
 </form>
 <a class="w3-btn w3-margin-bottom" href="{%url 'new_category'%}" target="_blank">Добавить категорию</a>
@@ -35,4 +49,19 @@
     $('#dt').val(today);
 });
 </script>
+<script>
+    // Здесь не важно, как мы скрываем текст.
+    // Также можно использовать style.display:
+    document.getElementById('hider').onclick = function() {
+    for (var i = 2; i < 8; i++) {
+        var dt_id='dt_' + i.toString()
+        var tm_id='tm_' + i.toString()
+        if (document.getElementById(dt_id).hidden){
+            document.getElementById(dt_id).hidden=false
+            document.getElementById(tm_id).hidden=false
+            break
+        }
+    }
+    }
+  </script>
 {% endblock %}

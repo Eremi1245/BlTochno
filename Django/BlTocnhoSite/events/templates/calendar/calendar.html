@@ -25,14 +25,18 @@
     {% for week in month_list %}
     <tr class="my_row">
       {% for day_dict in week%}
+      {%if day_dict.day|data_checker %}
+      <th class="my_col" style="background-color: grey;">
+      {%else%}
       <th class="my_col">
+      {%endif%}
         <div class="day_number"><a class="link_for_event_day" href="{%url 'event_day' day_dict.day %}">{{day_dict.day|dt_handler}}</a></div>
         {%if day_dict.events%}
         <table class="event_table">
           {% for event in day_dict.events %}
-            <tr class="event_row">
-              <th class="event_col">{{event.tm}}</th>
-              <th class="event_col">{{event.name}}</th>
+              <tr class="event_row">
+                <th class="event_col">{{event.tm}}</th>
+                <th class="event_col">{{event.name}}</th>
             </tr>
           {%endfor%}
         </table>
@@ -48,42 +52,4 @@
     {% endfor %}
   </table>
 </div>
-	</body>
-</html>
 {% endblock %}
-	
-<!-- 
-<table class="calendar_table">
-  <tr class="my_row">
-    <th class="my_col">Понедельник</th>
-    <th class="my_col">Вторник</th>
-    <th class="my_col">Среда</th>
-    <th class="my_col">Четверг</th>
-    <th class="my_col">Пятница</th>
-    <th class="my_col">Суббота</th>
-    <th class="my_col">Воскресенье</th>
-  </tr>
-  {% for week in month_list %}
-  <tr class="my_row">
-    {% for day_dict in week%}
-    <th class="my_col">
-      <div class="day_number">{{day_dict.day|dt_handler}}</div>
-      {%if day_dict.events%}
-        {% for event in day_dict.events %}
-          <div class="event_cell">
-            <div>{{event.tm}}</div>
-            <div>{{event.name}}</div>
-            <div>{{event.status}}</div>
-            <div>Действия</div>
-          </div>
-        {%endfor%}
-      {%else%}
-        <div class="event_cell">
-          <div>Ничего не запланированно</div>
-        </div>
-      {%endif%}
-    </th>
-    {%endfor%}
-  </tr>
-  {% endfor %}
-</table> -->

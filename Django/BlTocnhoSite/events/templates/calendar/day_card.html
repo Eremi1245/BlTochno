@@ -52,10 +52,7 @@
               {% csrf_token %}
               <input value="{{event.id}} NO_SUCCES" id="no_succes_button" type="image" src="{% static 'my_calendar/img/no_succes.png' %}" alt="Выполненно" width="20" height="20">
             </form>
-            <form  method= "POST" >
-              {% csrf_token %}
-              <input value="{{event.id}} PENDING" id="pending_button" type="image" src="{% static 'my_calendar/img/pending.png' %}" alt="Выполненно" width="20" height="20">
-            </form>
+            <a href="{%url 'event' event.id %}"><img src="{% static 'my_calendar/img/pending.png' %}" alt="Выполненно" width="20" height="20"></a>
             <form  method= "POST" >
               {% csrf_token %}
               <input value="{{event.id}} CANCEL" id="cancel_button" type="image" src="{% static 'my_calendar/img/cancel.png' %}" alt="Выполненно" width="20" height="20">
@@ -65,7 +62,7 @@
       {%endfor%}
       <tr id='add_event_row'class="my_row">
         <th class="event_col">
-          <a class="add_btn" href="{%url 'new_event'%}"><span>Добавить евент</span></a> 
+          <a class="add_btn" href="{%url 'new_event' date_string%}"><span>Добавить евент</span></a> 
         </th>
       </tr>
     </tbody>

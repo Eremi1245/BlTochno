@@ -1,11 +1,12 @@
 from collections import defaultdict
 from datetime import date, datetime, time, timedelta
+from queue import Empty
 from django.views.decorators.csrf import csrf_exempt
 import json
 import requests
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
-from events.forms import AddEventForm, AddCategoryForm
+from events.forms import AddEventForm, AddCategoryForm,EditCategoryForm
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
 from events.models import Event, Category, Habit, Habits_Events
@@ -53,7 +54,20 @@ def calendar(request, year: int = None, month: int = None):
 
 
 def event(request, event_id):
-    return render(request, 'calendar/event_list.html')
+    event=get_object_or_404(Event, id=event_id)
+    if request.method == 'POST':
+        event_form = AddEventForm(request.POST, instance=event)
+
+        if event_form.is_valid():
+            updt_event = event_form.save(commit=False)
+            updt_event.save()
+
+            return redirect('event',event.id)
+        else:
+            return HttpResponse(event_form.errors)
+    else:
+        event_form = AddEventForm(instance=event)
+    return render(request, 'calendar/event_card.html', {'event_form': event_form,'event':event})
 
 
 def get_all_events(dt: date):
@@ -93,9 +107,9 @@ def days_to_events(month: list[list[date]]) -> dict[date:list[Event]]:
 def calendar_builder(year: int = None, month: int = None) -> list[list[date]]:
     start_day = date(year, month, 1)
     if month == 12:
-        year = year + 1
-        month = 1
-    end_day = date(year, month + 1, 1) - timedelta(days=1)
+        end_day=date(year, month, 31)
+    else:
+        end_day = date(year, month + 1, 1) - timedelta(days=1)
     start_day = start_day - timedelta(days=start_day.weekday())
     month = []
     index = 1
@@ -168,7 +182,7 @@ def event_action(request):
     return JsonResponse({"success": False}, status=400)
 
 
-def add_new(request):
+def add_new(request,date_string=None):
     categories = Category.objects.all()
 
     if request.method == 'POST':
@@ -182,9 +196,9 @@ def add_new(request):
         else:
             return HttpResponse(event_form.errors)
     else:
-        event_form = AddEventForm()
+        empty_event=Event(dt=date_string)
+        event_form = AddEventForm(instance=empty_event)
     return render(request, 'calendar/new_event.html', {'event_form': event_form, 'categories': categories})
-
 
 def add_new_category(request):
     if request.method == 'POST':
@@ -207,43 +221,49 @@ def add_new_habbit(request):
     if request.method == 'POST':
         form_data = request.POST
         category = get_object_or_404(categories, name=form_data['category'])
-        new_event = Event(
-            category=category,
-            name=form_data['event_name'],
-            status='ACTIVE',
-            dt=form_data['dt'],
-            tm=form_data['tm']
-        )
-        new_event.save()
-        dt = datetime.strptime(form_data['dt'], "%Y-%m-%d").date()
-        time_delta = timedelta(days=7)
-        year_end = date(year=my_year, month=12, day=31)
-        dt += time_delta
-        all_events = []
-        all_events.append(new_event)
-        while dt <= year_end:
-            add_event = Event(
-                category=category,
-                name=form_data['event_name'],
-                dt=dt.strftime("%Y-%m-%d"),
-                tm=form_data['tm']
-            )
-            add_event.save()
-            all_events.append(add_event)
-            dt += time_delta
-
         new_habit = Habit(
             category=category,
             name=form_data['name'],
         )
         new_habit.save()
-        for event in all_events:
-            habit_event = Habits_Events(
-                habit_id=new_habit,
-                event_id=event
+        all_dates=list(form_data.values())[4:]
+        all_dates=[(all_dates[i],all_dates[i+1]) for i in range(0,len(all_dates),2)]
+        for k,v in all_dates:
+            if k and v:
+                new_event = Event(
+                    category=category,
+                    name=form_data['event_name'],
+                    status='ACTIVE',
+                    dt=k,
+                    tm=v
+                )
+                new_event.save()
+                dt = datetime.strptime(k, "%Y-%m-%d").date()
+                time_delta = timedelta(days=7)
+                year_end = date(year=my_year, month=12, day=31)
+                dt += time_delta
+                all_events = []
+                all_events.append(new_event)
+                while dt <= year_end:
+                    add_event = Event(
+                        category=category,
+                        name=form_data['event_name'],
+                        dt=dt.strftime("%Y-%m-%d"),
+                        tm=v
+                    )
+                    add_event.save()
+                    all_events.append(add_event)
+                    dt += time_delta
 
-            )
-            habit_event.save()
+                for event in all_events:
+                    habit_event = Habits_Events(
+                        habit_id=new_habit,
+                        event_id=event
+
+                    )
+                    habit_event.save()
+            else:
+                break
         return redirect('calendar')
     else:
         return render(request, 'calendar/new_habit.html', {'categories': categories})
@@ -258,7 +278,20 @@ def habits(request):
 
 
 def habit_card(request, habit_id):
-    pass
+    habit=get_object_or_404(Habit, id=habit_id)
+    if request.method == 'POST':
+        habit_form = EditCategoryForm(request.POST, instance=habit)
+
+        if habit_form.is_valid():
+            upd_habit = habit_form.save(commit=False)
+            upd_habit.save()
+
+            return redirect('habit',habit.id)
+        else:
+            return HttpResponse(habit_form.errors)
+    else:
+        habit_form = EditCategoryForm(instance=habit)
+    return render(request, 'calendar/habit_card.html', {'habit_form': habit_form,'habit':habit})
 
 
 def delete_habit(request, habit_id):

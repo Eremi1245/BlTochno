@@ -19,10 +19,39 @@
     justify-content: space-between;
 }
 
+
 .my_col{
     width: 14%;
     border: outset;
     max-width: 14%;
+}
+
+.my_col:first-child {
+    background-color: rgb(0, 255, 242);
+}
+
+.my_col:nth-child(2) {
+    background-color: rgb(0, 255, 221);
+}
+
+.my_col:nth-child(3) {
+    background-color: rgb(0, 255, 98);
+}
+
+.my_col:nth-child(4) {
+    background-color: rgb(0, 255, 0);
+}
+
+.my_col:nth-child(5) {
+    background-color: rgb(123, 255, 0);
+}
+
+.my_col:nth-child(6) {
+    background-color: rgb(251, 255, 0);
+}
+
+.my_col:nth-child(7) {
+    background-color: rgb(255, 208, 0);
 }
 
 .event_cell{
