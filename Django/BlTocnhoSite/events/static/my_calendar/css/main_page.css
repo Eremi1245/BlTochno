@@ -1,0 +1,10 @@
+.container{
+    display:flex;
+    justify-content:space-between;
+  }
+  
+  .container_item{
+    border:groove;
+    width:100%;
+    height:100%;
+  }

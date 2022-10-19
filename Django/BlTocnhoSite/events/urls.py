@@ -1,5 +1,9 @@
 from django.urls import path
-from events.views import calendar,event,events_day,event_action,add_new,add_new_category,add_new_habbit,habits,habit_card,delete_habit
+from events.view.calendar import calendar
+from events.view.event import add_new,event,event_action
+from events.view.habit import add_new_habbit,habit_card,delete_habit,habits
+from events.view.day import events_day
+from events.view.category import add_new_category
 urlpatterns = [
     path('', calendar,name='calendar'),
     path('<int:year>/<int:month>', calendar),

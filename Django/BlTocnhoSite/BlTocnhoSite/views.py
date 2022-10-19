@@ -4,8 +4,8 @@ from django.http import HttpResponse
 from events.models import Event
 
 def index(request):
-    today_events=Event.objects.all().filter(dt=date.today())
+    current_events=Event.objects.filter(dt='1999-01-01')
     context={
-        'today_events':today_events
+        'current_events':current_events
     }
     return render(request, 'index.html',context=context)

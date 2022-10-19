@@ -1,3 +1,4 @@
+from datetime import date, time
 from enum import unique
 from django.db import models
 
@@ -25,10 +26,13 @@ class Event(models.Model):
     )
     dt = models.DateField(
         verbose_name='Дата Ивента',
-        blank=False
+        default=date(year=1999,month=1,day=1),
+        blank=True
     )
     tm = models.TimeField(
-        verbose_name='Время Ивента'
+        verbose_name='Время Ивента',
+        default=time(hour=0,minute=0,second=0),
+        blank=True,
     )
 
     status = models.CharField(
