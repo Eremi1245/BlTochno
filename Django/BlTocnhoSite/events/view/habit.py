@@ -5,6 +5,10 @@ from events.forms import EditCategoryForm
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
 from events.models import Event, Category, Habit, Habits_Events
+today = date.today()
+my_year = today.year
+my_month = today.month
+my_day = today.day
 
 
 def add_new_habbit(request):
