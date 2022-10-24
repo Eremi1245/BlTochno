@@ -3,10 +3,17 @@
 {% load my_filters %}
 {% block title %}Add new event{% endblock  %}
 {% block content %}
-<form action="{%url 'new_event'%}" method="post">
-    {% csrf_token %}
-    {{ event_form }}
-    <input type="submit" value="Submit">
-</form>
-<a class="w3-btn w3-margin-bottom" href="{%url 'new_category'%}" target="_blank">Добавить категорию</a>
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4">{{title}}</h1>
+            <form action="{%url 'new_event'%}" method="post">
+                {% csrf_token %}
+                {{ event_form }}
+                <input type="submit" value="Submit">
+            </form>
+            <a class="w3-btn w3-margin-bottom" href="{%url 'new_category'%}" target="_blank">Добавить категорию</a>
+        </div>
+    </main>
+</div>
 {% endblock %}

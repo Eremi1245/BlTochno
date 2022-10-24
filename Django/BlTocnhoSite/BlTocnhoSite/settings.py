@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'events',
     'rest_framework',
+    'users'
 ]
 
 MIDDLEWARE = [
@@ -60,7 +61,7 @@ ROOT_URLCONF = 'BlTocnhoSite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates', 'events/templates', 'BlTocnhoSite/templates'],
+        'DIRS': ['templates', 'events/templates', 'BlTocnhoSite/templates', 'users/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -89,6 +90,7 @@ DATABASES = {
     }
 }
 
+AUTH_USER_MODEL='users.BlTochnoUser'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -128,6 +130,7 @@ STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
     'events/static/',
+    'BlTocnhoSite/static/'
 ]
 
 # Default primary key field type

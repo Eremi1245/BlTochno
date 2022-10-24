@@ -9,6 +9,7 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('calendar/',include('events.urls')),
+    path('users/',include('users.urls')),
     path('',index,name='home'),
     path('api-auth/', include('rest_framework.urls')),
     path('api/', include(router.urls)),

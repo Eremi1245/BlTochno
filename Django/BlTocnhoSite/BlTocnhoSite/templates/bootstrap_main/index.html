@@ -1,0 +1,299 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load my_filters %}
+{% block title %}BlTochno{% endblock  %}
+{% block content %}
+    {% if user.is_authenticated %}
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4">{{title}}</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item active">Dashboard</li>
+                </ol>
+                <div class="row">
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card bg-primary text-white mb-4">
+                            <div class="card-body">Запланированные евенты</div>
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <a class="small text-white stretched-link" href="{%url 'planning_events'%}">Посмотреть...</a>
+                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card bg-warning text-white mb-4">
+                            <div class="card-body">Прошедшие ивенты без статуса</div>
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <a class="small text-white stretched-link" href="{%url 'passed_events'%}">Посмотреть...</a>
+                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card bg-success text-white mb-4">
+                            <div class="card-body">Выполненные Евенты</div>
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <a class="small text-white stretched-link" href="{%url 'succes_events'%}">Посмотреть...</a>
+                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card bg-danger text-white mb-4">
+                            <div class="card-body">Не выполненные Евенты</div>
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <a class="small text-white stretched-link" href="{%url 'no_succes_events'%}">Посмотреть...</a>
+                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-6">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <i class="fas fa-chart-area me-1"></i>
+                                Бюджет
+                            </div>
+                            <div class="card-body">
+                                <h3>12 569 рублей</h3>
+                                <br>
+                                <canvas id="myAreaChart" width="100%" height="40"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <i class="fas fa-chart-area me-1"></i>
+                                Записки
+                            </div>
+                            <div class="card-body">
+                                <table id="datatablesSimple1">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:80%;">Name</th>
+                                        </tr>
+                                        <a class="add_btn" href="{%url 'new_event'%}"><span>Добавить</span></a>
+                                    </thead>
+                                    <tbody>
+                                        {%for event in current_events%}
+                                        {%if event.status|in_processig_handler:'passed' %}
+                                            <tr  id='event_{{event.id}}' style="background-color: rgb(77, 51, 3);">
+                                            {%elif event.status|in_processig_handler:'SUCCES' %}
+                                            <tr  id='event_{{event.id}}' style="background-color: greenyellow;opacity: 0.4;">
+                                            {%elif event.status|in_processig_handler:'NO_SUCCES' %}
+                                            <tr  id='event_{{event.id}}' style="background-color: indianred;opacity: 0.4;">
+                                            {%elif event.status|in_processig_handler:'PENDING' %}
+                                            <tr id='event_{{event.id}}' style="background-color: rgb(201, 231, 144);opacity: 0.4;">
+                                            {%elif event.status|in_processig_handler:'CANCEL' %}
+                                            <tr  id='event_{{event.id}}' style="background-color: grey;opacity: 0.4;">
+                                            {%else%}
+                                            <tr id='event_{{event.id}}'>
+                                            {%endif%}
+                                            <td class="name" style="width: 90%;">{{event.name}}</td>
+                                            <td id='actions_{{event.id}}' class="actions">
+                                                <form  method= "POST" >
+                                                    {% csrf_token %}
+                                                    <input value="{{event.id}} SUCCES" id="succes_button" type="image" src="{% static 'my_calendar/img/succes.png' %}" alt="Выполненно" width="20" height="20">
+                                                </form>
+                                                <form  method= "POST" >
+                                                    {% csrf_token %}
+                                                    <input value="{{event.id}} CANCEL" id="cancel_button" type="image" src="{% static 'my_calendar/img/cancel.png' %}" alt="Выполненно" width="20" height="20">
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        {%endfor%}
+                                    </tbody>
+                                            
+                                    </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-table me-1"></i>
+                        События сегодня
+                    </div>
+                    <div class="card-body">
+                        <table id="datatablesSimple">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Time</th>
+                                    <th>Event</th>
+                                    <th>Category</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for event in today_events%}
+                                {%if event.status|in_processig_handler:'passed' %}
+                                    <tr id='event_{{event.id}}' style="background-color: rgb(77, 51, 3);">
+                                {%elif event.status|in_processig_handler:'SUCCES' %}
+                                    <tr id='event_{{event.id}}' style="background-color: greenyellow;opacity: 0.4;">
+                                {%elif event.status|in_processig_handler:'NO_SUCCES' %}
+                                    <tr id='event_{{event.id}}' style="background-color: indianred;opacity: 0.4;">
+                                {%elif event.status|in_processig_handler:'PENDING' %}
+                                    <tr id='event_{{event.id}}' style="background-color: rgb(201, 231, 144);opacity: 0.4;">
+                                {%elif event.status|in_processig_handler:'CANCEL' %}
+                                    <tr id='event_{{event.id}}' style="background-color: grey;opacity: 0.4;">
+                                {%else%}
+                                    <tr id='event_{{event.id}}'>
+                                {%endif%}
+                                    <td class="counter">#{{forloop.counter}}</td>
+                                    <td class="tm">{{event.tm|good_dt}}</td>
+                                    <td class="name">{{event.name}}</td>
+                                    <td class="category">({{event.category}})</td>
+                                    {%if not event.status|in_processig_handler:'In processing' %}
+                                        <td class="status" id="status_{{event.id}}">{{event.status|status_handler}}</td>
+                                    {%else%}
+                                        <td class="status" id ="status_blink_color">{{event.status|status_handler}}</td>
+                                    {%endif%}
+                                    <td class="actions">
+                                        <form  method= "POST" >
+                                        {% csrf_token %}
+                                        <input value="{{event.id}} SUCCES" id="succes_button" type="image" src="{% static 'my_calendar/img/succes.png' %}" alt="Выполненно" width="20" height="20">
+                                        </form>
+                                        <form  method= "POST" >
+                                        {% csrf_token %}
+                                        <input value="{{event.id}} NO_SUCCES" id="no_succes_button" type="image" src="{% static 'my_calendar/img/no_succes.png' %}" alt="Выполненно" width="20" height="20">
+                                        </form>
+                                        <a href="{%url 'event' event.id %}"><img src="{% static 'my_calendar/img/pending.png' %}" alt="Выполненно" width="20" height="20"></a>
+                                        <form  method= "POST" >
+                                        {% csrf_token %}
+                                        <input value="{{event.id}} CANCEL" id="cancel_button" type="image" src="{% static 'my_calendar/img/cancel.png' %}" alt="Выполненно" width="20" height="20">
+                                        </form>
+                                    </td>
+                                </tr>
+                                {%endfor%}
+                                <tr>
+                                <td>
+                                    <a class="add_btn" href="{%url 'new_event' date_string%}"><span>Добавить евент</span></a> 
+                                </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer class="py-4 bg-light mt-auto">
+            <div class="container-fluid px-4">
+                <div class="d-flex align-items-center justify-content-between small">
+                    <div class="text-muted">Copyright &copy; Your Website 2022</div>
+                    <div>
+                        <a href="#">Privacy Policy</a>
+                        &middot;
+                        <a href="#">Terms &amp; Conditions</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+    {%else%}
+    <div>
+        <h1>Войдите</h1>
+    </div>
+    {%endif%}
+</div>
+
+<script>
+    $("#datatablesSimple").submit(function(e){
+    e.preventDefault();
+    console.log(e)
+    var values=e.target.lastElementChild.attributes[0].value.split(' ')
+    $.ajax({
+        type : 'POST',
+        url :  "{% url 'event_action' %}",
+        contentType: 'application/json',
+        headers : {"X-CSRFToken": '{{ csrf_token }}'},
+        dataType: 'json',
+        data : {
+        'id':values[0],
+        'action':values[1],
+        'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        success : function(response){
+                var event_id='#event_'+values[0]
+                var status_id='#status_'+values[0]
+                var actions_id='#actions_'+values[0]
+                console.log(event_id)
+                console.log(status_id)
+                if (values[1]=='SUCCES'){
+                $(event_id).css('background-color', 'greenyellow').css('opacity','0.4');
+                $(status_id).text('Успешно выполненное');
+                // $(actions_id).html("");
+                }
+                else if(values[1]=='NO_SUCCES'){
+                $(event_id).css('background-color', 'indianred').css('opacity','0.4');
+                $(status_id).text('Не выполненное');
+                }
+                else if(values[1]=='PENDING'){
+                $(event_id).css('background-color', 'rgb(201, 231, 144)').css('opacity','0.4');
+                $(status_id).text('Отложенное');
+                }
+                else if(values[1]=='CANCEL'){
+                $(event_id).css('background-color', 'grey').css('opacity','0.4');
+                $(status_id).text('Отмененно');
+                }
+
+        },
+        error : function(response){
+            console.log(response)
+        }
+    });
+});
+</script>
+<script>
+$("#datatablesSimple1").submit(function(e){
+e.preventDefault();
+console.log(e)
+var values=e.target.lastElementChild.attributes[0].value.split(' ')
+$.ajax({
+    type : 'POST',
+    url :  "{% url 'event_action' %}",
+    contentType: 'application/json',
+    headers : {"X-CSRFToken": '{{ csrf_token }}'},
+    dataType: 'json',
+    data : {
+    'id':values[0],
+    'action':values[1],
+    'csrfmiddlewaretoken': '{{ csrf_token }}'
+    },
+    success : function(response){
+            var event_id='#event_'+values[0]
+            var status_id='#status_'+values[0]
+            var actions_id='#actions_'+values[0]
+            console.log(event_id)
+            console.log(status_id)
+            if (values[1]=='SUCCES'){
+            $(event_id).css('background-color', 'greenyellow').css('opacity','0.4');
+            $(status_id).text('Успешно выполненное');
+            // $(actions_id).html("");
+            }
+            else if(values[1]=='NO_SUCCES'){
+            $(event_id).css('background-color', 'indianred').css('opacity','0.4');
+            $(status_id).text('Не выполненное');
+            }
+            else if(values[1]=='PENDING'){
+            $(event_id).css('background-color', 'rgb(201, 231, 144)').css('opacity','0.4');
+            $(status_id).text('Отложенное');
+            }
+            else if(values[1]=='CANCEL'){
+            $(event_id).css('background-color', 'grey').css('opacity','0.4');
+            $(status_id).text('Отмененно');
+            }
+
+    },
+    error : function(response){
+        console.log(response)
+    }
+});
+});
+</script>
+
+{% endblock %}

@@ -5,22 +5,29 @@
 {% block content %}
 <link rel="stylesheet" type="text/css"  href="{% static 'my_calendar/css/style.css' %}">
 <link rel="stylesheet" type="text/css"  href="{% static 'my_calendar/css/day_table.css' %}">
-<table class="day_table">
-	<thead>
-		<tr>
-			<th style="width:80%;">Name</th>
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4">{{title}}</h1>
+                <table class="day_table">
+                    <thead>
+                        <tr>
+                            <th style="width:80%;">Name</th>
 
-		</tr>
-	</thead>
-	<tbody>
-        {% for habit in habits%}
-            <tr>
-                <td>{{habit.name}}</td>
-                <td><a class="add_btn" href="{%url 'habit' habit.id %}"><span>Edit</span></a> </td>
-                <td><a class="add_btn" href="{%url 'delete_habit' habit.id %}"><span>Delete</span></a> </td>
-            </tr>
-        {% endfor%}
-	</tbody>
-</table>
-<a class="add_btn" href="{%url 'new_habit'%}"><span>Добавить евент</span></a> 
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for habit in habits%}
+                            <tr>
+                                <td>{{habit.name}}</td>
+                                <td><a class="add_btn" href="{%url 'habit' habit.id %}"><span>Edit</span></a> </td>
+                                <td><a class="add_btn" href="{%url 'delete_habit' habit.id %}"><span>Delete</span></a> </td>
+                            </tr>
+                        {% endfor%}
+                    </tbody>
+                </table>
+                <a class="add_btn" href="{%url 'new_habit'%}"><span>Добавить евент</span></a>
+        </div>
+    </main>
+</div>
 {% endblock %}

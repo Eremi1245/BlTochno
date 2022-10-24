@@ -5,73 +5,105 @@
 {% block content %}
 <link rel="stylesheet" type="text/css"  href="{% static 'my_calendar/css/style.css' %}">
 <link rel="stylesheet" type="text/css"  href="{% static 'my_calendar/css/day_table.css' %}">
-<div class="day_content">
-  <div class="table_div">
-    <table id="contactForm" title="Твое расписание" class="day_table">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Time</th>
-          <th>Event</th>
-          <th>Category</th>
-          <th>Description</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-      {% for event in events%}
-        {%if event.status|in_processig_handler:'passed' %}
-          <tr id='event_{{event.id}}' style="background-color: rgb(77, 51, 3);">
-        {%elif event.status|in_processig_handler:'SUCCES' %}
-          <tr id='event_{{event.id}}' style="background-color: greenyellow;opacity: 0.4;">
-        {%elif event.status|in_processig_handler:'NO_SUCCES' %}
-          <tr id='event_{{event.id}}' style="background-color: indianred;opacity: 0.4;">
-        {%elif event.status|in_processig_handler:'PENDING' %}
-          <tr id='event_{{event.id}}' style="background-color: rgb(201, 231, 144);opacity: 0.4;">
-        {%elif event.status|in_processig_handler:'CANCEL' %}
-          <tr id='event_{{event.id}}' style="background-color: grey;opacity: 0.4;">
-        {%else%}
-          <tr id='event_{{event.id}}'>
-        {%endif%}
-          <th>#{{forloop.counter}}</th>
-          <th>{{event.tm|good_dt}}</th>
-          <th >{{event.name}}</th>
-          <th>({{event.category}})</th>
-          <th>{{event.desc}}</th>
-          {%if not event.status|in_processig_handler:'In processing' %}
-            <th  id="status_{{event.id}}">{{event.status|status_handler}}</th>
-          {%else%}
-            <th id ="status_blink_color">{{event.status|status_handler}}</th>
-          {%endif%}
-          <th class="actions">
-            <form  method= "POST" >
-              {% csrf_token %}
-              <input value="{{event.id}} SUCCES" id="succes_button" type="image" src="{% static 'my_calendar/img/succes.png' %}" alt="Выполненно" width="20" height="20">
-            </form>
-            <form  method= "POST" >
-              {% csrf_token %}
-              <input value="{{event.id}} NO_SUCCES" id="no_succes_button" type="image" src="{% static 'my_calendar/img/no_succes.png' %}" alt="Выполненно" width="20" height="20">
-            </form>
-            <a href="{%url 'event' event.id %}"><img src="{% static 'my_calendar/img/pending.png' %}" alt="Выполненно" width="20" height="20"></a>
-            <form  method= "POST" >
-              {% csrf_token %}
-              <input value="{{event.id}} CANCEL" id="cancel_button" type="image" src="{% static 'my_calendar/img/cancel.png' %}" alt="Выполненно" width="20" height="20">
-            </form>
-          </th>
-      </tr>
-      {%endfor%}
-      <tr id='add_event_row'class="my_row">
-        <th class="event_col">
-          <a class="add_btn" href="{%url 'new_event' date_string%}"><span>Добавить евент</span></a> 
-        </th>
-      </tr>
-    </tbody>
-    </table>
-  </div>
-  <div class="non_table_div">
-
-  </div>
+<link rel="stylesheet" type="text/css"  href="{% static 'my_calendar/css/time_line.css' %}">
+<div id="layoutSidenav_content">
+  <main>
+      <div class="container-fluid px-4">
+          <h1 class="mt-4">{{title}}</h1>
+          <div class="day_content">
+            <div class="table_div">
+              <table id="contactForm" title="Твое расписание" class="day_table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Time</th>
+                    <th>Event</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for event in events%}
+                  {%if event.status|in_processig_handler:'passed' %}
+                    <tr id='event_{{event.id}}' style="background-color: rgb(77, 51, 3);">
+                  {%elif event.status|in_processig_handler:'SUCCES' %}
+                    <tr id='event_{{event.id}}' style="background-color: greenyellow;opacity: 0.4;">
+                  {%elif event.status|in_processig_handler:'NO_SUCCES' %}
+                    <tr id='event_{{event.id}}' style="background-color: indianred;opacity: 0.4;">
+                  {%elif event.status|in_processig_handler:'PENDING' %}
+                    <tr id='event_{{event.id}}' style="background-color: rgb(201, 231, 144);opacity: 0.4;">
+                  {%elif event.status|in_processig_handler:'CANCEL' %}
+                    <tr id='event_{{event.id}}' style="background-color: grey;opacity: 0.4;">
+                  {%else%}
+                    <tr id='event_{{event.id}}'>
+                  {%endif%}
+                    <th>#{{forloop.counter}}</th>
+                    <th>{{event.tm|good_dt}}</th>
+                    <th >{{event.name}}</th>
+                    <th>({{event.category}})</th>
+                    <th>{{event.desc}}</th>
+                    {%if not event.status|in_processig_handler:'In processing' %}
+                      <th  id="status_{{event.id}}">{{event.status|status_handler}}</th>
+                    {%else%}
+                      <th id ="status_blink_color">{{event.status|status_handler}}</th>
+                    {%endif%}
+                    <th class="actions">
+                      <form  method= "POST" >
+                        {% csrf_token %}
+                        <input value="{{event.id}} SUCCES" id="succes_button" type="image" src="{% static 'my_calendar/img/succes.png' %}" alt="Выполненно" width="20" height="20">
+                      </form>
+                      <form  method= "POST" >
+                        {% csrf_token %}
+                        <input value="{{event.id}} NO_SUCCES" id="no_succes_button" type="image" src="{% static 'my_calendar/img/no_succes.png' %}" alt="Выполненно" width="20" height="20">
+                      </form>
+                      <a href="{%url 'event' event.id %}"><img src="{% static 'my_calendar/img/pending.png' %}" alt="Выполненно" width="20" height="20"></a>
+                      <form  method= "POST" >
+                        {% csrf_token %}
+                        <input value="{{event.id}} CANCEL" id="cancel_button" type="image" src="{% static 'my_calendar/img/cancel.png' %}" alt="Выполненно" width="20" height="20">
+                      </form>
+                    </th>
+                </tr>
+                {%endfor%}
+                <tr id='add_event_row'class="my_row">
+                  <th class="event_col">
+                    <a class="add_btn" href="{%url 'new_event' date_string%}"><span>Добавить евент</span></a> 
+                  </th>
+                </tr>
+              </tbody>
+              </table>
+            </div>
+            <div class="non_table_div">
+              <div class="row d-flex justify-content-center mt-70 mb-70">
+                <div class="col-md-6" style="width: 100%;">
+                  <div class="main-card mb-3 card">
+                    <div class="card-body">
+                        <h5 class="card-title">User Timeline</h5>
+                        <div class="vertical-timeline vertical-timeline--animate vertical-timeline--one-column">
+                          {% for event in events%}
+                            <div class="vertical-timeline-item vertical-timeline-element">
+                                <div>
+                                    <span class="vertical-timeline-element-icon bounce-in">
+                                        <i class="badge badge-dot badge-dot-xl badge-warning"> </i>
+                                    </span>
+                                    <div class="vertical-timeline-element-content bounce-in">
+                                      <h4 class="timeline-title">{{event.name}}</h4>
+                                        <p>{{event.desc}}</p>
+                                        <span class="vertical-timeline-element-date">{{event.tm}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            {%endfor%}
+                          </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+  </main>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>

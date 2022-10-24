@@ -74,7 +74,7 @@ def event_action(request):
     return JsonResponse({"success": False}, status=400)
 
 
-def get_all_events(dt: date):
+def get_all_events(dt: str):
     day_events = Event.objects.filter(dt=dt).order_by('tm')
     if len(day_events) == 0:
         return day_events
@@ -92,3 +92,36 @@ def get_all_events(dt: date):
     query_set = Event.objects.filter(dt=dt).order_by('tm')
     query_set = list(filter(lambda day: day.status != 'CANCEL', query_set))
     return query_set
+
+
+def planning_events(request):
+    events=Event.objects.filter(status='ACTIVE')
+    context={
+        'events':events,
+        'title':'Запланированные ивенты'
+    }
+    return render(request,'calendar/event/event_list.html',context=context)
+
+def passed_events(request):
+    events=Event.objects.filter(status='passed')
+    context={
+        'events':events,
+        'title':'Не обработанные ивенты'
+    }
+    return render(request,'calendar/event/event_list.html',context=context)
+
+def succes_events(request):
+    events=Event.objects.filter(status='SUCCES')
+    context={
+        'events':events,
+        'title':'Выполненные ивенты'
+    }
+    return render(request,'calendar/event/event_list.html',context=context)
+
+def no_succes_events(request):
+    events=Event.objects.filter(status='NO_SUCCES')
+    context={
+        'events':events,
+        'title':'Не выполненные ивенты'
+    }
+    return render(request,'calendar/event/event_list.html',context=context)

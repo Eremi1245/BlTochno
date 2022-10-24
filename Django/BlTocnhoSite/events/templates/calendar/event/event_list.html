@@ -1,7 +1,128 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load my_filters %}
-{% block title %}Add new event{% endblock  %}
+{% block title %}Events{% endblock  %}
 {% block content %}
-  {{event_form}}
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4">{{title}}</h1>
+            <ol class="breadcrumb mb-4">
+                <li class="breadcrumb-item active">Dashboard</li>
+            </ol>
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-table me-1"></i>
+                    События сегодня
+                </div>
+                <div class="card-body">
+                    <table id="datatablesSimple">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Time</th>
+                                <th>Event</th>
+                                <th>Category</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for event in events%}
+                              <tr id='event_{{event.id}}'>
+                                <td class="counter">#{{forloop.counter}}</td>
+                                <td class="dt">{{event.dt}}</td>
+                                <td class="tm">{{event.tm|good_dt}}</td>
+                                <td class="name">{{event.name}}</td>
+                                <td class="category">({{event.category}})</td>
+                                <td class="status" id="status_{{event.id}}">{{event.status|status_handler}}</td>
+                                <td class="actions">
+                                    <form  method= "POST" >
+                                    {% csrf_token %}
+                                    <input value="{{event.id}} SUCCES" id="succes_button" type="image" src="{% static 'my_calendar/img/succes.png' %}" alt="Выполненно" width="20" height="20">
+                                    </form>
+                                    <form  method= "POST" >
+                                    {% csrf_token %}
+                                    <input value="{{event.id}} NO_SUCCES" id="no_succes_button" type="image" src="{% static 'my_calendar/img/no_succes.png' %}" alt="Выполненно" width="20" height="20">
+                                    </form>
+                                    <a href="{%url 'event' event.id %}"><img src="{% static 'my_calendar/img/pending.png' %}" alt="Выполненно" width="20" height="20"></a>
+                                    <form  method= "POST" >
+                                    {% csrf_token %}
+                                    <input value="{{event.id}} CANCEL" id="cancel_button" type="image" src="{% static 'my_calendar/img/cancel.png' %}" alt="Выполненно" width="20" height="20">
+                                    </form>
+                                </td>
+                            </tr>
+                          {%endfor%}
+                          <tr>
+                            <td>
+                              <a class="add_btn" href="{%url 'new_event'%}"><span>Добавить евент</span></a> 
+                            </td>
+                          </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="py-4 bg-light mt-auto">
+        <div class="container-fluid px-4">
+            <div class="d-flex align-items-center justify-content-between small">
+                <div class="text-muted">Copyright &copy; Your Website 2022</div>
+                <div>
+                    <a href="#">Privacy Policy</a>
+                    &middot;
+                    <a href="#">Terms &amp; Conditions</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+<script>
+  $("#datatablesSimple").submit(function(e){
+    e.preventDefault();
+    console.log(e)
+    var values=e.target.lastElementChild.attributes[0].value.split(' ')
+    $.ajax({
+        type : 'POST',
+        url :  "{% url 'event_action' %}",
+        contentType: 'application/json',
+        headers : {"X-CSRFToken": '{{ csrf_token }}'},
+        dataType: 'json',
+        data : {
+        'id':values[0],
+        'action':values[1],
+        'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        success : function(response){
+                var event_id='#event_'+values[0]
+                var status_id='#status_'+values[0]
+                var actions_id='#actions_'+values[0]
+                console.log(event_id)
+                console.log(status_id)
+                if (values[1]=='SUCCES'){
+                $(event_id).css('background-color', 'greenyellow').css('opacity','0.4');
+                $(status_id).text('Успешно выполненное');
+                // $(actions_id).html("");
+                }
+                else if(values[1]=='NO_SUCCES'){
+                $(event_id).css('background-color', 'indianred').css('opacity','0.4');
+                $(status_id).text('Не выполненное');
+                }
+                else if(values[1]=='PENDING'){
+                $(event_id).css('background-color', 'rgb(201, 231, 144)').css('opacity','0.4');
+                $(status_id).text('Отложенное');
+                }
+                else if(values[1]=='CANCEL'){
+                $(event_id).css('background-color', 'grey').css('opacity','0.4');
+                $(status_id).text('Отмененно');
+                }
+
+        },
+        error : function(response){
+            console.log(response)
+        }
+    });
+  });
+</script>
 {% endblock %}
+

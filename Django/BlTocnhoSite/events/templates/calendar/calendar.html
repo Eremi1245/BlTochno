@@ -4,52 +4,58 @@
 {% block title %}Calendar 04{% endblock  %}
 {% block content %}
 <link rel="stylesheet" href="{% static 'my_calendar/css/style.css' %}">
-<!-- <script src="{% static 'my_calendar/js/main.js' %}"></script> -->
-<div class="bltochno_calendar">
-  <div class="calendar_header" style="display: flex; justify-content: space-between;">
-    <button id="btnPrev" type="button"><a href="/calendar/{{prev_year}}/{{prev_month}}">Предыдущий</a></button>
-    <div class="calendar_year">{{year}}</div>
-    <!-- <div class="calendar_month">{{month|month_to_string}}</div> -->
-    <button id="btnNext" type="button"><a href="/calendar/{{next_year}}/{{next_month}}">Следующий</a></button>
-  </div>
-  <table class="calendar_table">
-    <tr class="my_row">
-      <th class="my_col">Понедельник</th>
-      <th class="my_col">Вторник</th>
-      <th class="my_col">Среда</th>
-      <th class="my_col">Четверг</th>
-      <th class="my_col">Пятница</th>
-      <th class="my_col">Суббота</th>
-      <th class="my_col">Воскресенье</th>
-    </tr>
-    {% for week in month_list %}
-    <tr class="my_row">
-      {% for day_dict in week%}
-      {%if day_dict.day|data_checker %}
-      <th class="my_col" style="background-color: grey;">
-      {%else%}
-      <th class="my_col">
-      {%endif%}
-        <div class="day_number"><a class="link_for_event_day" href="{%url 'event_day' day_dict.day %}">{{day_dict.day|dt_handler}}</a></div>
-        {%if day_dict.events%}
-        <table class="event_table">
-          {% for event in day_dict.events %}
-              <tr class="event_row">
-                <th class="event_col">{{event.tm}}</th>
-                <th class="event_col">{{event.name}}</th>
-            </tr>
-          {%endfor%}
-        </table>
-        {%else%}
-          <div class="event_cell">
-            <div>Ничего не запланированно</div>
+<div id="layoutSidenav_content">
+  <main>
+      <div class="container-fluid px-4">
+          <h1 class="mt-4">{{title}}</h1>
+          <div class="bltochno_calendar">
+            <div class="calendar_header" style="display: flex; justify-content: space-between;">
+              <button id="btnPrev" type="button"><a href="{%url 'calendar' prev_year prev_month%}">Предыдущий</a></button>
+              <div class="calendar_year">{{year}}</div>
+              <!-- <div class="calendar_month">{{month|month_to_string}}</div> -->
+              <button id="btnNext" type="button"><a href="{%url 'calendar' next_year next_month%}">Следующий</a></button>
+            </div>
+            <table class="calendar_table">
+              <tr class="my_row">
+                <th class="my_col">Понедельник</th>
+                <th class="my_col">Вторник</th>
+                <th class="my_col">Среда</th>
+                <th class="my_col">Четверг</th>
+                <th class="my_col">Пятница</th>
+                <th class="my_col">Суббота</th>
+                <th class="my_col">Воскресенье</th>
+              </tr>
+              {% for week in month_list %}
+              <tr class="my_row">
+                {% for day_dict in week%}
+                {%if day_dict.day|data_checker %}
+                <th class="my_col" style="background-color: grey;">
+                {%else%}
+                <th class="my_col">
+                {%endif%}
+                  <div class="day_number"><a class="link_for_event_day" href="{%url 'event_day' day_dict.day %}">{{day_dict.day|dt_handler}}</a></div>
+                  {%if day_dict.events%}
+                  <table class="event_table">
+                    {% for event in day_dict.events %}
+                        <tr class="event_row">
+                          <th class="event_col">{{event.tm}}</th>
+                          <th class="event_col">{{event.name}}</th>
+                      </tr>
+                    {%endfor%}
+                  </table>
+                  {%else%}
+                    <div class="event_cell">
+                      <div>Ничего не запланированно</div>
+                    </div>
+                    {%endif%}
+                    <a class="link_for_event_day" href="{%url 'event_day' day_dict.day %}">Весь день...</a>
+                  </th>
+                {%endfor%}
+              </tr>
+              {% endfor %}
+            </table>
           </div>
-          {%endif%}
-          <a class="link_for_event_day" href="{%url 'event_day' day_dict.day %}">Весь день...</a>
-        </th>
-      {%endfor%}
-    </tr>
-    {% endfor %}
-  </table>
+      </div>
+  </main>
 </div>
 {% endblock %}

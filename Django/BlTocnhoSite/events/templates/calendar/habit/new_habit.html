@@ -4,38 +4,45 @@
 {% block title %}Add new event{% endblock  %}
 {% block content %}
 <link rel="stylesheet" type="text/css"  href="{% static 'my_calendar/css/style.css' %}">
-<form action="{%url 'new_habit'%}" method="post">
-    {% csrf_token %}
-    <label for="category">Категория:</label><br>
-    <p><select id="category" name="category">
-        {% for category in categories%}
-        <option>{{category}}</option>
-        {%endfor%}
-    </select></p>
-    <label for="name">Привычка (название): </label><br>
-    <input type="text" id="name" name="name"><br>
-    <label for="event_name">Ивент: </label><br>
-    <input type="text" id="event_name" name="event_name"><br>
-    <input type="button" id="hider" value="Нажмите, чтобы спрятать текст" />
-    <label for="dt">Регулярная дата ивента: </label><br>
-    <input type="date" id="dt" name="dt"><br>
-    <label for="tm">Регулярное время ивента: </label><br>
-    <input type="time" id="tm" name="tm"><br>
-    <input class="hid_inp" hidden type="date" id="dt_2" name="dt_2"><br>
-    <input class="hid_inp" hidden type="time" id="tm_2" name="tm_2"><br>
-    <input class="hid_inp" hidden type="date" id="dt_3" name="dt_3"><br>
-    <input class="hid_inp" hidden type="time" id="tm_3" name="tm_3"><br>
-    <input class="hid_inp" hidden type="date" id="dt_4" name="dt_4"><br>
-    <input class="hid_inp" hidden type="time" id="tm_4" name="tm_4"><br>
-    <input class="hid_inp" hidden type="date" id="dt_5" name="dt_5"><br>
-    <input class="hid_inp" hidden type="time" id="tm_5" name="tm_5"><br>
-    <input class="hid_inp" hidden type="date" id="dt_6" name="dt_6"><br>
-    <input class="hid_inp" hidden type="time" id="tm_6" name="tm_6"><br>
-    <input class="hid_inp" hidden type="date" id="dt_7" name="dt_7"><br>
-    <input class="hid_inp" hidden type="time" id="tm_7" name="tm_7"><br>
-    <input type="submit" value="Submit">
-</form>
-<a class="w3-btn w3-margin-bottom" href="{%url 'new_category'%}" target="_blank">Добавить категорию</a>
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4">{{title}}</h1>
+            <form action="{%url 'new_habit'%}" method="post">
+                {% csrf_token %}
+                <label for="category">Категория:</label><br>
+                <p><select id="category" name="category">
+                    {% for category in categories%}
+                    <option>{{category}}</option>
+                    {%endfor%}
+                </select></p>
+                <label for="name">Привычка (название): </label><br>
+                <input type="text" id="name" name="name"><br>
+                <label for="event_name">Ивент: </label><br>
+                <input type="text" id="event_name" name="event_name"><br>
+                <input type="button" id="hider" value="Нажмите, чтобы спрятать текст" />
+                <label for="dt">Регулярная дата ивента: </label><br>
+                <input type="date" id="dt" name="dt"><br>
+                <label for="tm">Регулярное время ивента: </label><br>
+                <input type="time" id="tm" name="tm"><br>
+                <input class="hid_inp" hidden type="date" id="dt_2" name="dt_2"><br>
+                <input class="hid_inp" hidden type="time" id="tm_2" name="tm_2"><br>
+                <input class="hid_inp" hidden type="date" id="dt_3" name="dt_3"><br>
+                <input class="hid_inp" hidden type="time" id="tm_3" name="tm_3"><br>
+                <input class="hid_inp" hidden type="date" id="dt_4" name="dt_4"><br>
+                <input class="hid_inp" hidden type="time" id="tm_4" name="tm_4"><br>
+                <input class="hid_inp" hidden type="date" id="dt_5" name="dt_5"><br>
+                <input class="hid_inp" hidden type="time" id="tm_5" name="tm_5"><br>
+                <input class="hid_inp" hidden type="date" id="dt_6" name="dt_6"><br>
+                <input class="hid_inp" hidden type="time" id="tm_6" name="tm_6"><br>
+                <input class="hid_inp" hidden type="date" id="dt_7" name="dt_7"><br>
+                <input class="hid_inp" hidden type="time" id="tm_7" name="tm_7"><br>
+                <input type="submit" value="Submit">
+            </form>
+            <a class="w3-btn w3-margin-bottom" href="{%url 'new_category'%}" target="_blank">Добавить категорию</a>
+        </div>
+    </main>
+</div>
 <script>
     $(document).ready( function() {
     var now = new Date();

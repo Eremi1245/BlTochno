@@ -39,7 +39,8 @@ def calendar(request, year: int = None, month: int = None):
         'prev_year': prev_year,
         'month': month,
         'prev_month': prev_month,
-        'next_month': next_month
+        'next_month': next_month,
+        'title':'Календарь'
     }
     return render(request, 'calendar/calendar.html', context=context)
 
