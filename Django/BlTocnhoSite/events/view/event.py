@@ -75,53 +75,56 @@ def event_action(request):
 
 
 def get_all_events(dt: str):
-    day_events = Event.objects.filter(dt=dt).order_by('tm')
+    day_events = Event.objects.filter(dt=dt).order_by('tm_start')
     if len(day_events) == 0:
         return day_events
     curr_hour = datetime(year=datetime.now().year, month=datetime.now(
     ).month, day=datetime.now().day, hour=datetime.now().hour)
     for event in day_events:
         event_date_hour = datetime(
-            year=event.dt.year, month=event.dt.month, day=event.dt.day, hour=event.tm.hour)
+            year=event.dt.year, month=event.dt.month, day=event.dt.day, hour=event.tm_start.hour)
         if event_date_hour == curr_hour and event.status == 'ACTIVE':
             Event.objects.filter(pk=event.id).update(status='In processing')
         elif event_date_hour < curr_hour and event.status == 'ACTIVE':
             Event.objects.filter(pk=event.id).update(status='passed')
         else:
             break
-    query_set = Event.objects.filter(dt=dt).order_by('tm')
+    query_set = Event.objects.filter(dt=dt).order_by('tm_start')
     query_set = list(filter(lambda day: day.status != 'CANCEL', query_set))
     return query_set
 
 
 def planning_events(request):
-    events=Event.objects.filter(status='ACTIVE')
-    context={
-        'events':events,
-        'title':'Запланированные ивенты'
+    events = Event.objects.filter(status='ACTIVE')
+    context = {
+        'events': events,
+        'title': 'Запланированные ивенты'
     }
-    return render(request,'calendar/event/event_list.html',context=context)
+    return render(request, 'calendar/event/event_list.html', context=context)
+
 
 def passed_events(request):
-    events=Event.objects.filter(status='passed')
-    context={
-        'events':events,
-        'title':'Не обработанные ивенты'
+    events = Event.objects.filter(status='passed')
+    context = {
+        'events': events,
+        'title': 'Не обработанные ивенты'
     }
-    return render(request,'calendar/event/event_list.html',context=context)
+    return render(request, 'calendar/event/event_list.html', context=context)
+
 
 def succes_events(request):
-    events=Event.objects.filter(status='SUCCES')
-    context={
-        'events':events,
-        'title':'Выполненные ивенты'
+    events = Event.objects.filter(status='SUCCES')
+    context = {
+        'events': events,
+        'title': 'Выполненные ивенты'
     }
-    return render(request,'calendar/event/event_list.html',context=context)
+    return render(request, 'calendar/event/event_list.html', context=context)
+
 
 def no_succes_events(request):
-    events=Event.objects.filter(status='NO_SUCCES')
-    context={
-        'events':events,
-        'title':'Не выполненные ивенты'
+    events = Event.objects.filter(status='NO_SUCCES')
+    context = {
+        'events': events,
+        'title': 'Не выполненные ивенты'
     }
-    return render(request,'calendar/event/event_list.html',context=context)
+    return render(request, 'calendar/event/event_list.html', context=context)

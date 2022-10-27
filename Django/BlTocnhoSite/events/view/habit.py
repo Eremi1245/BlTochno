@@ -31,7 +31,7 @@ def add_new_habbit(request):
                     name=form_data['event_name'],
                     status='ACTIVE',
                     dt=k,
-                    tm=v
+                    tm_start=v
                 )
                 new_event.save()
                 dt = datetime.strptime(k, "%Y-%m-%d").date()
@@ -45,7 +45,7 @@ def add_new_habbit(request):
                         category=category,
                         name=form_data['event_name'],
                         dt=dt.strftime("%Y-%m-%d"),
-                        tm=v
+                        tm_start=v
                     )
                     add_event.save()
                     all_events.append(add_event)

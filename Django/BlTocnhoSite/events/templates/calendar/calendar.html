@@ -38,7 +38,7 @@
                   <table class="event_table">
                     {% for event in day_dict.events %}
                         <tr class="event_row">
-                          <th class="event_col">{{event.tm}}</th>
+                          <th class="event_col">{{event.tm_start}}</th>
                           <th class="event_col">{{event.name}}</th>
                       </tr>
                     {%endfor%}

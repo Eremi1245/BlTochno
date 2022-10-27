@@ -29,14 +29,28 @@ class Event(models.Model):
         default=date(year=1999,month=1,day=1),
         blank=True
     )
-    tm = models.TimeField(
-        verbose_name='Время Ивента',
+    tm_start = models.TimeField(
+        verbose_name='Время Ивента (начало)',
         default=time(hour=0,minute=0,second=0),
         blank=True,
     )
 
+    tm_end = models.TimeField(
+        verbose_name='Время Ивента (конец)',
+        default=time(hour=0,minute=0,second=0),
+        blank=True,
+    )
+
+    tm_road=models.TimeField(
+        verbose_name='Время на дорогу',
+        default=time(hour=0,minute=0,second=0),
+        blank=True,
+    )
+
+
     status = models.CharField(
         max_length=255, choices=status_choise, default='ACTIVE')
+    
     desc = models.CharField(
         verbose_name='Подробное описание ивента', max_length=255,
         blank=True)

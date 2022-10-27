@@ -121,3 +121,31 @@ body{
   display: table;
   clear: both;
 }
+
+.timeline{
+  width: 100%;
+  position: relative;
+}
+
+.times{
+  display: flex;
+  border: solid;
+  justify-content: space-between;
+}
+
+.hour_block{
+  width: 4%;
+  text-align: end;
+  font-size: x-small;
+}
+
+.event_line{
+  display: inline;
+}
+
+.current_time{
+  background: red;
+  height: 100%;
+  width: 2px;
+  position: absolute;
+}

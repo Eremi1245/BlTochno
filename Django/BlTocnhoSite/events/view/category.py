@@ -16,4 +16,4 @@ def add_new_category(request):
             return HttpResponse(category_form.errors)
     else:
         category_form = AddCategoryForm()
-    return render(request, 'calendar/category/new_category.html', {'category_form': category_form})
+        return render(request, 'calendar/category/new_category.html', {'category_form': category_form})

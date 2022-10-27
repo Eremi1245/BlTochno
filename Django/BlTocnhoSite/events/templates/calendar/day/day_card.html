@@ -9,7 +9,44 @@
 <div id="layoutSidenav_content">
   <main>
       <div class="container-fluid px-4">
-          <h1 class="mt-4">{{title}}</h1>
+          <h1 class="mt-4">{{date_string|dt_handler_for_title}}</h1>
+          <div class="timeline">
+            <div id='current_time' class="current_time"></div>
+            <div class="events_block">
+              {% for event in events%}
+                <p class='event_line' style="{{event|get_style_for_timeline:False}}">{{event.name}}</p>
+                <div style="{{event|get_style_for_timeline:True}}"></div>
+              {%endfor%}
+            </div>
+            <div class="full_day">
+              <div class='times'>
+                  <div class="hour_block">1</div>
+                  <div class="hour_block">2</div>
+                  <div class="hour_block">3</div>
+                  <div class="hour_block">4</div>
+                  <div class="hour_block">5</div>
+                  <div class="hour_block">6</div>
+                  <div class="hour_block">7</div>
+                  <div class="hour_block">8</div>
+                  <div class="hour_block">9</div>
+                  <div class="hour_block">10</div>
+                  <div class="hour_block">11</div>
+                  <div class="hour_block">12</div>
+                  <div class="hour_block">13</div>
+                  <div class="hour_block">14</div>
+                  <div class="hour_block">15</div>
+                  <div class="hour_block">16</div>
+                  <div class="hour_block">17</div>
+                  <div class="hour_block">18</div>
+                  <div class="hour_block">19</div>
+                  <div class="hour_block">20</div>
+                  <div class="hour_block">21</div>
+                  <div class="hour_block">22</div>
+                  <div class="hour_block">23</div>
+                  <div class="hour_block">00</div>
+              </div>
+            </div>
+          </div>
           <div class="day_content">
             <div class="table_div">
               <table id="contactForm" title="Твое расписание" class="day_table">
@@ -40,7 +77,7 @@
                     <tr id='event_{{event.id}}'>
                   {%endif%}
                     <th>#{{forloop.counter}}</th>
-                    <th>{{event.tm|good_dt}}</th>
+                    <th>{{event.tm_start|good_dt}}</th>
                     <th >{{event.name}}</th>
                     <th>({{event.category}})</th>
                     <th>{{event.desc}}</th>
@@ -149,7 +186,61 @@
         });
    });
 </script>
+<script>
+  $("#contactForm").submit(function(e){
+        e.preventDefault();
+        console.log(e)
+        var values=e.target.lastElementChild.attributes[0].value.split(' ')
+        $.ajax({
+            type : 'POST',
+            url :  "{% url 'event_action' %}",
+            contentType: 'application/json',
+            headers : {"X-CSRFToken": '{{ csrf_token }}'},
+            dataType: 'json',
+            data : {
+              'id':values[0],
+              'action':values[1],
+              'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success : function(response){
+                    var event_id='#event_'+values[0]
+                    var status_id='#status_'+values[0]
+                    if (values[1]=='SUCCES'){
+                      $(event_id).css('background-color', 'greenyellow').css('opacity','0.4');
+                      $(status_id).text('Успешно выполненное');
+                    }
+                    else if(values[1]=='NO_SUCCES'){
+                      $(event_id).css('background-color', 'indianred').css('opacity','0.4');
+                      $(status_id).text('Не выполненное');
+                    }
+                    else if(values[1]=='PENDING'){
+                      $(event_id).css('background-color', 'rgb(201, 231, 144)').css('opacity','0.4');
+                      $(status_id).text('Отложенное');
+                    }
+                    else if(values[1]=='CANCEL'){
+                      $(event_id).css('background-color', 'grey').css('opacity','0.4');
+                      $(status_id).text('Отмененно');
+                    }
 
-
+            },
+            error : function(response){
+                console.log(response)
+            }
+        });
+   });
+</script>
+<script>
+  update()
+  var statusIntervalId = window.setInterval(update, 60000);
+function update() {
+    var one_hour_seconds=3600
+    var today=new Date()
+    var hour=today.getHours()
+    var minute=today.getMinutes()
+    var second=today.getSeconds()
+    var margin_element=(one_hour_seconds*(hour+minute/100+second/100)*100)/86400
+    $("#current_time").css({ 'margin-left': margin_element+"%" })
+    }
+</script>
 {%endblock%}
 

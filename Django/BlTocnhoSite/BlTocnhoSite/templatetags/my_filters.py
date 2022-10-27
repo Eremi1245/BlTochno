@@ -1,7 +1,9 @@
-from datetime import date, datetime, time
+from datetime import date, datetime, time,timedelta
 from django import template
 from django.template.defaulttags import register
+from events.models import Event
 from events.utils import status_choise_for_tag_filter
+import random
 register = template.Library()
 
 
@@ -56,6 +58,30 @@ def dt_handler(dt: date) -> int:
 
 
 @register.filter
+def dt_handler_for_title(dt: str) -> str:
+    dt_format = datetime.strptime(dt, '%Y-%m-%d')
+    weekday = weekday_to_string(dt_format.weekday())
+    return f'{weekday} {dt_format.day} {month_to_string(dt_format.month)}'
+
+
+def weekday_to_string(weekday: int):
+    if weekday == 0:
+        return 'Понедельник'
+    elif weekday == 1:
+        return 'Вторник'
+    elif weekday == 2:
+        return 'Среда'
+    elif weekday == 3:
+        return 'Четверг'
+    elif weekday == 4:
+        return 'Пятница'
+    elif weekday == 5:
+        return 'Суббота'
+    elif weekday == 6:
+        return 'Воскресенье'
+
+
+@register.filter
 def status_handler(status: str) -> str:
     return status_choise_for_tag_filter[status]
 
@@ -75,3 +101,29 @@ def data_checker(dt: date) -> bool:
         return True
     else:
         return False
+
+
+@register.filter
+def get_style_for_timeline(event: Event,div_flag:bool) -> str:
+    dt_start=datetime(year=event.dt.year,month=event.dt.month,day=event.dt.day,hour=event.tm_start.hour,minute=event.tm_start.minute)
+    dt_end=datetime(year=event.dt.year,month=event.dt.month,day=event.dt.day,hour=event.tm_end.hour,minute=event.tm_end.minute)
+    event_longer=dt_end-dt_start
+    one_hour_seconds=3600
+    element_width=(event_longer.seconds*100)/86400
+    margin_element=((one_hour_seconds*(dt_start.hour+dt_start.minute/100))*100)/86400
+    color=random_color()
+    if div_flag:
+        return f"width:{element_width}%;margin-left:{margin_element}%;background:{color};height: 15px;"
+    else:
+        return f"width:{element_width}%;margin-left:{margin_element}%;"
+
+@register.filter
+def get_style_current_timeline():
+    now=datetime.now()
+    one_hour_seconds=3600
+    margin_element=(one_hour_seconds*(now.hour+now.minute/100+now.second/100)*100)/86400
+    return f"margin-left:{margin_element}%;"
+
+def random_color()->str:
+    r = lambda: random.randint(0,255)
+    return '#%02X%02X%02X' % (r(),r(),r())
