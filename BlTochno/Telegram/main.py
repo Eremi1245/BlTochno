@@ -1,6 +1,6 @@
 from copy import deepcopy
 from datetime import datetime
-from telegram_bot_calendar import DetailedTelegramCalendar, LSTEP
+# from telegram_bot_calendar import DetailedTelegramCalendar, LSTEP
 from telebot import TeleBot, types
 
 # from BlTochno.BlTochno.DataBase.models import Event, Category
@@ -21,6 +21,7 @@ def main():
         '/add_category'
     ]
 
+    
     # event=Event()
 
     @bot.message_handler(commands=['start'])

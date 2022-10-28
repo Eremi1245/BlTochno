@@ -112,7 +112,7 @@
               </table>
             </div>
             <div class="non_table_div">
-              <div class="row d-flex justify-content-center mt-70 mb-70">
+              <!-- <div class="row d-flex justify-content-center mt-70 mb-70">
                 <div class="col-md-6" style="width: 100%;">
                   <div class="main-card mb-3 card">
                     <div class="card-body">
@@ -136,7 +136,7 @@
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> -->
             </div>
           </div>
       </div>
@@ -233,10 +233,6 @@
   var statusIntervalId = window.setInterval(update, 1000);
 function update() {
     var one_hour_seconds=3600
-    // var today=new Date()
-    // var hour=today.getHours()
-    // var minute=today.getMinutes()
-    // var second=today.getSeconds()
     var margin_element=(one_hour_seconds*(new Date().getHours()+new Date().getMinutes()/100+new Date().getSeconds()/1000)*100)/86400
     $("#current_time").css({ 'margin-left': margin_element+"%" })
     }

@@ -43,18 +43,27 @@ from urllib import request
 
 
 def my_day():
-    result=''
+    result = ''
     try:
         resp = requests.get('http://127.0.0.1:8000/api/events/')
-        resp= request_handler(resp)
+        resp = request_handler(resp)
         for res in resp:
-            result+=f'{res["tm"]} - {res["name"]} ({res["status"]})\n'
+            result += f'{res["tm_start"]} - {res["name"]} ({res["status"]})\n'
         return result
     except Exception as er:
         print(er)
 
 
-
-def request_handler(request:Response):
-    request=eval(request.text)
+def request_handler(request: Response):
+    request = eval(request.text)
     return request
+
+
+def notification():
+    resp=requests.get(
+        url='https://api.telegram.org/bot5446878932:AAE_wmAPKXEXlsTJHc1b49We7y7SX_Ns4Xk/sendMessage',
+        data={'chat_id': '294350087',
+        'text':'Test message',
+        'parse_mode':'HTML'})
+
+notification()

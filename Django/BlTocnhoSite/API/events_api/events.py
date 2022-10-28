@@ -11,7 +11,7 @@ class EventSerializer(serializers.ModelSerializer):
  
     class Meta:
         model = Event
-        fields = ['id','category','name', 'dt', 'tm','status','desc']
+        fields = ['id','category','name', 'dt', 'tm_start','tm_end','tm_road','status','desc']
         lookup_field='category'
 
 class EventViewSet(viewsets.ViewSet):
