@@ -4,6 +4,7 @@ from BlTochno.Hookah.hookasiteobject import HookaSiteObject, Page, SiteTreeBuild
 from BlTochno.Telegram.main import main as teleg_main
 from BlTochno.common_utils.parser import Parser
 from BlTochno.common_utils.urlobject import UrlObject
+from BlTochno.Telegram.tg_notification import notification
 
 # ur=UrlObject(url='https://hookah-cat.online/today-we-smoke/?limit=80',
 #              parsers=[Parser(regex='class=\"product-layout.*?href=\"(.*?)\"'),Parser(regex=)])
@@ -26,4 +27,5 @@ from BlTochno.common_utils.urlobject import UrlObject
 # )
 
 # print(tree_traversal(tree.tree))
-teleg_main()
+# teleg_main()
+notification()

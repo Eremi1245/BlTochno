@@ -57,13 +57,3 @@ def my_day():
 def request_handler(request: Response):
     request = eval(request.text)
     return request
-
-
-def notification():
-    resp=requests.get(
-        url='https://api.telegram.org/bot5446878932:AAE_wmAPKXEXlsTJHc1b49We7y7SX_Ns4Xk/sendMessage',
-        data={'chat_id': '294350087',
-        'text':'Test message',
-        'parse_mode':'HTML'})
-
-notification()
