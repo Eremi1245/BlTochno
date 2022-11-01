@@ -213,3 +213,10 @@
 	opacity: 0.65;
 	pointer-events: none;
 }
+
+
+.btn_block{
+    width: 50%;
+    margin-left: 66px;
+    display: grid;
+}

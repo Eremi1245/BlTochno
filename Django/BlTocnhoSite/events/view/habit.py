@@ -1,3 +1,4 @@
+from calendar import month
 from datetime import date, datetime, timedelta
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -5,6 +6,7 @@ from events.forms import EditCategoryForm
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
 from events.models import Event, Category, Habit, Habits_Events
+from dateutil.relativedelta import relativedelta
 today = date.today()
 my_year = today.year
 my_month = today.month
@@ -21,7 +23,8 @@ def add_new_habbit(request):
             name=form_data['name'],
         )
         new_habit.save()
-        all_dates = list(form_data.values())[4:]
+        period=form_data['period']
+        all_dates = list(form_data.values())[5:]
         all_dates = [(all_dates[i], all_dates[i+1])
                      for i in range(0, len(all_dates), 2)]
         for k, v in all_dates:
@@ -35,8 +38,18 @@ def add_new_habbit(request):
                 )
                 new_event.save()
                 dt = datetime.strptime(k, "%Y-%m-%d").date()
-                time_delta = timedelta(days=7)
-                year_end = date(year=my_year, month=12, day=31)
+                if period=="EveryWeek":
+                    time_delta = timedelta(days=7)
+                    year_end = date(year=my_year, month=12, day=31)
+                elif period=="EveryDay":
+                    time_delta = timedelta(days=1)
+                    year_end = date(year=my_year, month=12, day=31)
+                elif period=="EveryMonth":
+                    time_delta = relativedelta(months=1)
+                    year_end = date(year=my_year, month=12, day=31)
+                elif period=="EveryMonth":
+                    time_delta = relativedelta(year=1)
+                    year_end = date(year=my_year+10, month=12, day=31)
                 dt += time_delta
                 all_events = []
                 all_events.append(new_event)

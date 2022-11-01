@@ -4,11 +4,12 @@
 {% block title %}Add new event{% endblock  %}
 {% block content %}
 <link rel="stylesheet" type="text/css"  href="{% static 'my_calendar/css/style.css' %}">
+<link rel="stylesheet" type="text/css"  href="{% static 'my_calendar/css/radio_button.css' %}">
 <div id="layoutSidenav_content">
     <main>
-        <div class="container-fluid px-4">
+        <div class="container-fluid px-4" style="display: flex;">
             <h1 class="mt-4">{{title}}</h1>
-            <form action="{%url 'new_habit'%}" method="post">
+            <form id='form' action="{%url 'new_habit'%}" method="post" style="width: 150%;">
                 {% csrf_token %}
                 <label for="category">Категория:</label><br>
                 <p><select id="category" name="category">
@@ -20,26 +21,39 @@
                 <input type="text" id="name" name="name"><br>
                 <label for="event_name">Ивент: </label><br>
                 <input type="text" id="event_name" name="event_name"><br>
-                <input type="button" id="hider" value="Нажмите, чтобы спрятать текст" />
-                <label for="dt">Регулярная дата ивента: </label><br>
-                <input type="date" id="dt" name="dt"><br>
-                <label for="tm_start">Регулярное время ивента: </label><br>
+                <label>Регулярность Ивента</label>
+                <br>
+                <div class="form_radio_btn">
+                    <input id="radio-1" type="radio" name="period" value="EveryDay" checked>
+                    <label for="radio-1">Каждый день</label>
+                </div>
+                 
+                <div class="form_radio_btn">
+                    <input id="radio-2" type="radio" name="period" value="EveryWeek" checked>
+                    <label for="radio-2">Каждую неделю</label>
+                </div>
+                 
+                <div class="form_radio_btn">
+                    <input id="radio-3" type="radio" name="period" value="EveryMonth">
+                    <label for="radio-3">Каждый месяц</label>
+                </div>
+                 
+                <div class="form_radio_btn">
+                    <input id="radio-4" type="radio" name="period" value="EveryYear">
+                    <label for="radio-4">Каждый год</label>
+                </div>
+                <br>
+                <label for="dt">Регулярная дата и время ивента: </label><br>
+                <input type="date" id="dt" name="dt">
                 <input type="time" id="tm_start" name="tm_start"><br>
-                <input class="hid_inp" hidden type="date" id="dt_2" name="dt_2"><br>
-                <input class="hid_inp" hidden type="time" id="tm_2" name="tm_2"><br>
-                <input class="hid_inp" hidden type="date" id="dt_3" name="dt_3"><br>
-                <input class="hid_inp" hidden type="time" id="tm_3" name="tm_3"><br>
-                <input class="hid_inp" hidden type="date" id="dt_4" name="dt_4"><br>
-                <input class="hid_inp" hidden type="time" id="tm_4" name="tm_4"><br>
-                <input class="hid_inp" hidden type="date" id="dt_5" name="dt_5"><br>
-                <input class="hid_inp" hidden type="time" id="tm_5" name="tm_5"><br>
-                <input class="hid_inp" hidden type="date" id="dt_6" name="dt_6"><br>
-                <input class="hid_inp" hidden type="time" id="tm_6" name="tm_6"><br>
-                <input class="hid_inp" hidden type="date" id="dt_7" name="dt_7"><br>
-                <input class="hid_inp" hidden type="time" id="tm_7" name="tm_7"><br>
-                <input type="submit" value="Submit">
+                <input id="submit_btn" type="submit" value="Submit">
             </form>
-            <a class="w3-btn w3-margin-bottom" href="{%url 'new_category'%}" target="_blank">Добавить категорию</a>
+            <div class="btn_block">
+                <a id="dt_button" value="2" class="add_btn" onclick="myFunction()"><span>Добавить дату</span></a>
+                <a class="add_btn" href="{%url 'new_category'%}"><span>Добавить дату</span></a>
+                <a class="add_btn" href="{%url 'new_category'%}"><span>Добавить категорию</span></a>
+                <a class="add_btn" href="{%url 'new_category'%}"><span>Добавить категорию</span></a>
+            </div>
         </div>
     </main>
 </div>
@@ -57,8 +71,44 @@
 });
 </script>
 <script>
-    // Здесь не важно, как мы скрываем текст.
-    // Также можно использовать style.display:
+    function myFunction() {
+    // for (var i = 2; i < 8; i++) {
+    //     var dt_id='dt_' + i.toString()
+    //     var tm_id='tm_' + i.toString()
+    //     if (document.getElementById(dt_id).hidden){
+    //         document.getElementById(dt_id).hidden=false
+    //         document.getElementById(tm_id).hidden=false
+    //         break
+    //     }
+    // }
+    const dt_button = document.getElementById("dt_button");
+    var id=dt_button.getAttribute('value')
+    console.log(id)
+    var dt_id='dt_' + id
+    var tm_id='tm_' + id
+    const input_dt = document.createElement("input");
+    input_dt.setAttribute('id',dt_id)
+    input_dt.setAttribute('type','date')
+    input_dt.setAttribute('name',dt_id)
+    const br = document.createElement("br");
+    const input_tm = document.createElement("input");
+    input_tm.setAttribute('id',tm_id)
+    input_tm.setAttribute('type','time')
+    input_tm.setAttribute('name',tm_id)
+    const child = document.getElementById("submit_btn");
+    // const node = document.createTextNode("This is new.");
+    // para.appendChild(node);
+
+    const form = document.getElementById("form");
+    form.insertBefore(input_dt,child);
+    form.insertBefore(br,child);
+    form.insertBefore(input_tm,child);
+    form.insertBefore(br,child);
+    id=parseInt(id)+1
+    dt_button.setAttribute('value',id.toString())
+    }
+  </script>
+<!-- <script>
     document.getElementById('hider').onclick = function() {
     for (var i = 2; i < 8; i++) {
         var dt_id='dt_' + i.toString()
@@ -70,5 +120,5 @@
         }
     }
     }
-  </script>
+  </script> -->
 {% endblock %}
