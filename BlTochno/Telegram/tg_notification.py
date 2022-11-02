@@ -18,7 +18,7 @@ def parse_notification_time(event) -> str:
     return notification_time
 
 
-def text_notification_build(event)->str:
+def text_notification_build(event) -> str:
     tm_start = event['tm_start'][:-3]
     tm_end = event['tm_end'][:-3]
     tm_road = event['tm_road'][:-3]
@@ -29,12 +29,14 @@ def text_notification_build(event)->str:
 
 
 def notification():
+    print('Start notification...')
     today_events_dict = {
         'td_today': datetime.today().strftime("%Y-%m-%d"),
         'len_events': 0,
         'event_list': dict()
     }
     while True:
+        print(today_events_dict['event_list'])
         today = datetime.today().strftime("%Y-%m-%d")
         if today_events_dict['td_today'] == today:
             url = api_url+today
