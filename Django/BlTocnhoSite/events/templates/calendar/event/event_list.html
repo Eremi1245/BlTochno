@@ -32,7 +32,7 @@
                               <tr id='event_{{event.id}}'>
                                 <td class="counter">#{{forloop.counter}}</td>
                                 <td class="dt">{{event.dt}}</td>
-                                <td class="tm">{{event.tm|good_dt}}</td>
+                                <td class="tm">{{event.tm_start|good_dt}}</td>
                                 <td class="name">{{event.name}}</td>
                                 <td class="category">({{event.category}})</td>
                                 <td class="status" id="status_{{event.id}}">{{event.status|status_handler}}</td>
