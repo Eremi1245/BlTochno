@@ -146,7 +146,7 @@
                                 {%endif%}
                                     <td class="counter">#{{forloop.counter}}</td>
                                     <td class="tm">{{event.tm_start|good_dt}}</td>
-                                    <td class="name">{{event.name}}</td>
+                                    <td class="name"><a href="{%url 'event_day' event.dt %}" style="text-decoration: none;color: black;">{{event.name}}</a></td>
                                     <td class="category">({{event.category}})</td>
                                     {%if not event.status|in_processig_handler:'In processing' %}
                                         <td class="status" id="status_{{event.id}}">{{event.status|status_handler}}</td>

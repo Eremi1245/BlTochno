@@ -43,9 +43,15 @@
                     <label for="radio-4">Каждый год</label>
                 </div>
                 <br>
-                <label for="dt">Регулярная дата и время ивента: </label><br>
+                <label for="dt">Дата: </label>
                 <input type="date" id="dt" name="dt">
-                <input type="time" id="tm_start" name="tm_start"><br>
+                <label for="tm_start">Начало: </label>
+                <input type="time" id="tm_start" name="tm_start">
+                <label for="tm_end">Конец: </label>
+                <input type="time" id="tm_end" name="tm_end">
+                <label for="tm_road">Дорога: </label>
+                <input type="time" id="tm_road" name="tm_road">
+                <br>
                 <input id="submit_btn" type="submit" value="Submit">
             </form>
             <div class="btn_block">
@@ -83,9 +89,10 @@
     // }
     const dt_button = document.getElementById("dt_button");
     var id=dt_button.getAttribute('value')
-    console.log(id)
     var dt_id='dt_' + id
     var tm_id='tm_' + id
+    var tm_end_id='tm_end_' + id
+    var tm_road_id='tm_road_' + id
     const input_dt = document.createElement("input");
     input_dt.setAttribute('id',dt_id)
     input_dt.setAttribute('type','date')
@@ -95,14 +102,38 @@
     input_tm.setAttribute('id',tm_id)
     input_tm.setAttribute('type','time')
     input_tm.setAttribute('name',tm_id)
+    const input_tm_end = document.createElement("input");
+    input_tm_end.setAttribute('id',tm_end_id)
+    input_tm_end.setAttribute('type','time')
+    input_tm_end.setAttribute('name',tm_end_id)
+    const input_tm_road = document.createElement("input");
+    input_tm_road.setAttribute('id',tm_road_id)
+    input_tm_road.setAttribute('type','time')
+    input_tm_road.setAttribute('name',tm_road_id)
+    const date_label = document.createElement("label");
+    date_label.innerHTML='Дата: '
+    const tm_start_label = document.createElement("label");
+    tm_start_label.innerHTML='Начало: '
+    const tm_end_label = document.createElement("label");
+    tm_end_label.innerHTML='Конец: '
+    const tm_road_label = document.createElement("label");
+    tm_road_label.innerHTML='Дорога: '
     const child = document.getElementById("submit_btn");
     // const node = document.createTextNode("This is new.");
     // para.appendChild(node);
 
     const form = document.getElementById("form");
+    form.insertBefore(date_label,child);
     form.insertBefore(input_dt,child);
     form.insertBefore(br,child);
+    form.insertBefore(tm_start_label,child);
     form.insertBefore(input_tm,child);
+    form.insertBefore(br,child);
+    form.insertBefore(tm_end_label,child);
+    form.insertBefore(input_tm_end,child);
+    form.insertBefore(br,child);
+    form.insertBefore(tm_road_label,child);
+    form.insertBefore(input_tm_road,child);
     form.insertBefore(br,child);
     id=parseInt(id)+1
     dt_button.setAttribute('value',id.toString())

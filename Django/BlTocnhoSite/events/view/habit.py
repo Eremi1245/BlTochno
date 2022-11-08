@@ -2,7 +2,7 @@ from calendar import month
 from datetime import date, datetime, timedelta
 from django.shortcuts import render
 from django.http import HttpResponse
-from events.forms import EditCategoryForm
+from events.forms import EditCategoryForm,Habits_EventsForm
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
 from events.models import Event, Category, Habit, Habits_Events
@@ -23,32 +23,34 @@ def add_new_habbit(request):
             name=form_data['name'],
         )
         new_habit.save()
-        period=form_data['period']
+        period = form_data['period']
         all_dates = list(form_data.values())[5:]
-        all_dates = [(all_dates[i], all_dates[i+1])
-                     for i in range(0, len(all_dates), 2)]
-        for k, v in all_dates:
+        all_dates = [(all_dates[i], all_dates[i+1],all_dates[i+2],all_dates[i+3])
+                     for i in range(0, len(all_dates), 4)]
+        for k, v , v_end,v_road in all_dates:
             if k and v:
                 new_event = Event(
                     category=category,
                     name=form_data['event_name'],
                     status='ACTIVE',
                     dt=k,
-                    tm_start=v
+                    tm_start=v,
+                    tm_end=v_end,
+                    tm_road=v_road
                 )
                 new_event.save()
                 dt = datetime.strptime(k, "%Y-%m-%d").date()
-                if period=="EveryWeek":
+                if period == "EveryWeek":
                     time_delta = timedelta(days=7)
                     year_end = date(year=my_year, month=12, day=31)
-                elif period=="EveryDay":
+                elif period == "EveryDay":
                     time_delta = timedelta(days=1)
                     year_end = date(year=my_year, month=12, day=31)
-                elif period=="EveryMonth":
-                    time_delta = relativedelta(months=1)
+                elif period == "EveryMonth":
+                    time_delta = relativedelta(days=30)
                     year_end = date(year=my_year, month=12, day=31)
-                elif period=="EveryMonth":
-                    time_delta = relativedelta(year=1)
+                elif period == "EveryYear":
+                    time_delta = relativedelta(days=365)
                     year_end = date(year=my_year+10, month=12, day=31)
                 dt += time_delta
                 all_events = []
@@ -58,7 +60,9 @@ def add_new_habbit(request):
                         category=category,
                         name=form_data['event_name'],
                         dt=dt.strftime("%Y-%m-%d"),
-                        tm_start=v
+                        tm_start=v,
+                        tm_end=v_end,
+                        tm_road=v_road
                     )
                     add_event.save()
                     all_events.append(add_event)
@@ -86,10 +90,26 @@ def habits(request):
     return render(request, 'calendar/habit/habits_list.html', context=context)
 
 
+# def habit_card(request, habit_id):
+#     habit = get_object_or_404(Habit, id=habit_id)
+#     if request.method == 'POST':
+#         habit_form = EditCategoryForm(request.POST, instance=habit)
+
+#         if habit_form.is_valid():
+#             upd_habit = habit_form.save(commit=False)
+#             upd_habit.save()
+
+#             return redirect('habit', habit.id)
+#         else:
+#             return HttpResponse(habit_form.errors)
+#     else:
+#         habit_form = EditCategoryForm(instance=habit)
+#     return render(request, 'calendar/habit/habit_card.html', {'habit_form': habit_form, 'habit': habit})
+
 def habit_card(request, habit_id):
     habit = get_object_or_404(Habit, id=habit_id)
     if request.method == 'POST':
-        habit_form = EditCategoryForm(request.POST, instance=habit)
+        habit_form = Habits_EventsForm(request.POST, instance=habit)
 
         if habit_form.is_valid():
             upd_habit = habit_form.save(commit=False)
@@ -99,7 +119,7 @@ def habit_card(request, habit_id):
         else:
             return HttpResponse(habit_form.errors)
     else:
-        habit_form = EditCategoryForm(instance=habit)
+        habit_form = Habits_EventsForm(instance=habit)
     return render(request, 'calendar/habit/habit_card.html', {'habit_form': habit_form, 'habit': habit})
 
 
